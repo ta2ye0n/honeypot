@@ -3,6 +3,7 @@ package com.grapefruitade.honeypost.domain.post.service;
 import com.grapefruitade.honeypost.domain.image.dto.ImageDto;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
+import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
@@ -26,7 +27,7 @@ public class PostService {
     private final ImageRepository imageRepository;
 
     @Transactional
-    public void writePost(WritePost writePost, List<MultipartFile> images){
+    public void writePost(WritePost writePost, List<MultipartFile> images) {
         if (images.size() > 7) {
             throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
         }
@@ -79,4 +80,11 @@ public class PostService {
         return saveImageId;
     }
 
+    @Transactional
+    public void modifyPost(Long id, ModifyPost modify) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+
+        post.modifyPost(modify.getTitle(), modify.getContent());
+        postRepository.save(post);
+    }
 }

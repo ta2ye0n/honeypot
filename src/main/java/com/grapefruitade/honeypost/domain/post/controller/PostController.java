@@ -1,5 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.controller;
 
+import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
 import jakarta.validation.Valid;
@@ -19,9 +20,16 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping(value = "/write", consumes = { "multipart/form-data" })
-    public ResponseEntity<String> write (@Valid @RequestPart List<MultipartFile> images, @RequestPart WritePost write) {
+    @PostMapping(value = "/write", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> write(@Valid @RequestPart List<MultipartFile> images, @RequestPart WritePost write) {
         postService.writePost(write, images);
-        return ResponseEntity.status(HttpStatus.OK).body("글작성이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
     }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<String> modify(@PathVariable Long id, @RequestBody ModifyPost modify) {
+        postService.modifyPost(id, modify);
+        return ResponseEntity.status(HttpStatus.OK).body("글 수정이 완료되었습니다.");
+    }
+
 }
