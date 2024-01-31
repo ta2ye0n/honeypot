@@ -1,5 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.entity;
 
+import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.post.Book;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.OTT;
@@ -8,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,7 +23,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private Long PostId;
+    private Long postId;
 
     @Column(name = "title")
     private String title;
@@ -41,5 +45,8 @@ public class Post {
 
     @Column(name = "author")
     private String author;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images;
 
 }
