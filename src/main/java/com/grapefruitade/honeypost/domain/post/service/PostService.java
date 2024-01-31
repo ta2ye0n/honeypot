@@ -87,4 +87,11 @@ public class PostService {
         post.modifyPost(modify.getTitle(), modify.getContent());
         postRepository.save(post);
     }
+
+    @Transactional
+    public void deletePost (Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+
+        postRepository.delete(post);
+    }
 }
