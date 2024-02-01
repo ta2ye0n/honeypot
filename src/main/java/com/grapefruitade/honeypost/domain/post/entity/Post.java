@@ -48,6 +48,10 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
+    @ElementCollection
+    @Column(name = "likes")
+    private List<Long> likes;
+
     public void modifyPost(String title, String content) {
         this.title = title;
         this.content = content;

@@ -3,6 +3,8 @@ package com.grapefruitade.honeypost.domain.post.service;
 import com.grapefruitade.honeypost.domain.image.dto.ImageDto;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
+import com.grapefruitade.honeypost.domain.post.Category;
+import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,9 +92,29 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost (Long id) {
+    public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
         postRepository.delete(post);
     }
+
+    @Transactional
+    public List<InfoPost> postList(Category category) {
+        List<Post> list = postRepository.findByCategory(category);
+
+        return list.stream()
+                .map(this::infoPost)
+                .collect(Collectors.toList());
+    }
+
+    private InfoPost infoPost (Post post) {
+        return InfoPost.builder()
+                .postId(post.getPostId())
+                .author(post.getAuthor())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .likes(post.getLikes().size())
+                .build();
+    }
+
 }

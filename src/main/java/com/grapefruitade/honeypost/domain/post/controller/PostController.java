@@ -1,11 +1,12 @@
 package com.grapefruitade.honeypost.domain.post.controller;
 
+import com.grapefruitade.honeypost.domain.post.Category;
+import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,11 @@ public class PostController {
     public ResponseEntity<String> delete (@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.status(HttpStatus.OK).body("글 삭제가 완료되었습니다.");
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<InfoPost>> listPost (@RequestParam Category category) {
+        return ResponseEntity.ok(postService.postList(category));
     }
 
 }
