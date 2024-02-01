@@ -107,7 +107,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    private InfoPost infoPost (Post post) {
+    private InfoPost infoPost(Post post) {
         return InfoPost.builder()
                 .postId(post.getPostId())
                 .author(post.getAuthor())
@@ -117,4 +117,17 @@ public class PostService {
                 .build();
     }
 
+    @Transactional
+    public InfoPost info(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+
+        return InfoPost.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .author(post.getAuthor())
+                .likes(post.getLikes().size())
+                .build();
+    }
 }

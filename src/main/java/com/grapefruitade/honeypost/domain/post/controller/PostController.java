@@ -4,6 +4,7 @@ import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
+import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,11 @@ public class PostController {
     @GetMapping("/list")
     public ResponseEntity<List<InfoPost>> listPost (@RequestParam Category category) {
         return ResponseEntity.ok(postService.postList(category));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InfoPost> infoPost (@PathVariable Long id) {
+        return ResponseEntity.ok(postService.info(id));
     }
 
 }
