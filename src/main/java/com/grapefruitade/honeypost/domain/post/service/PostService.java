@@ -34,7 +34,6 @@ public class PostService {
         if (images.size() > 7) {
             throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
         }
-        List<Long> imagesId = saveImages(images);
 
         Post post = Post.builder()
                 .title(writePost.getTitle())
@@ -44,11 +43,13 @@ public class PostService {
                 .book(writePost.getBook())
                 .build();
 
+        List<Long> imagesId = saveImages(images, post);
+
         postRepository.save(post);
     }
 
     @SneakyThrows
-    private List<Long> saveImages(List<MultipartFile> images) {
+    private List<Long> saveImages(List<MultipartFile> images, Post post) {
         List<Long> saveImageId = new ArrayList<>();
 
         for (MultipartFile image : images) {
@@ -76,7 +77,7 @@ public class PostService {
                     .path(newFile.getPath())
                     .build();
 
-            Image save = imageRepository.save(imageDto.toEntity());
+            Image save = imageRepository.save(imageDto.toEntity(post));
             saveImageId.add(save.getId());
         }
 
