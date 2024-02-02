@@ -6,6 +6,7 @@ import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
+import com.grapefruitade.honeypost.domain.post.dto.PostInfo;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
@@ -43,7 +44,9 @@ public class PostService {
                 .book(writePost.getBook())
                 .build();
 
-        List<Long> imagesId = saveImages(images, post);
+        if (images != null && !images.isEmpty()) {
+            saveImages(images, post);
+        }
 
         postRepository.save(post);
     }
@@ -115,20 +118,23 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(post.getLikes().size())
+                .path(post.getImages().get(0).getPath())
                 .build();
     }
 
     @Transactional
-    public InfoPost info(Long id) {
+    public PostInfo info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
-        return InfoPost.builder()
+
+        return PostInfo.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(post.getAuthor())
                 .likes(post.getLikes().size())
+                .images(PostInfo.extractImagePaths(post.getImages()))
                 .build();
     }
 }

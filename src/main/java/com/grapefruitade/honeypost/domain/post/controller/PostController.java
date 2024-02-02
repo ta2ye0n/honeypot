@@ -3,6 +3,7 @@ package com.grapefruitade.honeypost.domain.post.controller;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
+import com.grapefruitade.honeypost.domain.post.dto.PostInfo;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
@@ -46,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InfoPost> infoPost (@PathVariable Long id) {
+    public ResponseEntity<PostInfo> infoPost (@PathVariable Long id) {
         return ResponseEntity.ok(postService.info(id));
     }
 
