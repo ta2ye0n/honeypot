@@ -51,4 +51,9 @@ public class PostController {
     public ResponseEntity<List<InfoPost>> searchPost (@RequestParam String keyword) {
         return ResponseEntity.ok(postService.searchPost(keyword));
     }
+
+    @GetMapping("/hot topic")
+    public ResponseEntity<List<InfoPost>> hotTopic () {
+        return ResponseEntity.ok(postService.hotTopic());
+    }
 }

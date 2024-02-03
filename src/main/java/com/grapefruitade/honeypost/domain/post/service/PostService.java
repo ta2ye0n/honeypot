@@ -145,7 +145,23 @@ public class PostService {
 
         for (Post post : allPost) {
             if (post.getContent().contains(keyword) ||
-            post.getTitle().contains(keyword)) {
+                    post.getTitle().contains(keyword)) {
+                result.add(post);
+            }
+        }
+
+        return result.stream()
+                .map(this::infoPost)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<InfoPost> hotTopic() {
+        List<Post> all = postRepository.findAll();
+        List<Post> result = new ArrayList<>();
+
+        for (Post post : all) {
+            if (post.getLikes().size() >= 50) {
                 result.add(post);
             }
         }
