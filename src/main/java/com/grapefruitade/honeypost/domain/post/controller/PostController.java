@@ -1,11 +1,7 @@
 package com.grapefruitade.honeypost.domain.post.controller;
 
 import com.grapefruitade.honeypost.domain.post.Category;
-import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
-import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
-import com.grapefruitade.honeypost.domain.post.dto.PostInfo;
-import com.grapefruitade.honeypost.domain.post.dto.WritePost;
-import com.grapefruitade.honeypost.domain.post.entity.Post;
+import com.grapefruitade.honeypost.domain.post.dto.*;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,4 +47,8 @@ public class PostController {
         return ResponseEntity.ok(postService.info(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<InfoPost>> searchPost (@RequestParam String keyword) {
+        return ResponseEntity.ok(postService.searchPost(keyword));
+    }
 }

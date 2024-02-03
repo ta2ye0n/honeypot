@@ -137,4 +137,21 @@ public class PostService {
                 .images(PostInfo.extractImagePaths(post.getImages()))
                 .build();
     }
+
+    @Transactional
+    public List<InfoPost> searchPost(String keyword) {
+        List<Post> allPost = postRepository.findAll();
+        List<Post> result = new ArrayList<>();
+
+        for (Post post : allPost) {
+            if (post.getContent().contains(keyword) ||
+            post.getTitle().contains(keyword)) {
+                result.add(post);
+            }
+        }
+
+        return result.stream()
+                .map(this::infoPost)
+                .collect(Collectors.toList());
+    }
 }
