@@ -2,18 +2,24 @@ package com.grapefruitade.honeypost.domain.auth.dto;
 
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.domain.user.enums.Role;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Data
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class RegisterRequestDto {
 
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String password;
+
+    @NotBlank
     private String nickname;
 
     public User user(PasswordEncoder passwordEncoder){
