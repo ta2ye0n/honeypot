@@ -8,11 +8,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import java.util.Collections;
 
 
 @Service
@@ -34,7 +33,7 @@ public class PrincipalDetailsService implements UserDetailsService {
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .role((Collection<GrantedAuthority>) grantedAuthority)
+                .role(Collections.singleton(grantedAuthority))
                 .build();
 
         return principalDetails;
