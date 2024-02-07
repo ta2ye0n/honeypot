@@ -14,6 +14,5 @@ public class InfoPost {
     private String title;
     private String content;
     private Integer likes;
-    private String path; // 이미지 경로
 
 }
