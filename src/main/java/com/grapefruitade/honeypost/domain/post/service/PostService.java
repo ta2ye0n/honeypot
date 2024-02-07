@@ -14,6 +14,7 @@ import com.grapefruitade.honeypost.global.exception.CustomException;
 import com.grapefruitade.honeypost.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,20 +65,23 @@ public class PostService {
             }
 
             File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/static/images/");
-
-            String originalFileName = image.getOriginalFilename();
+            if (!file.exists()) {
+                file.mkdirs();
+            }
 
             UUID uuid = UUID.randomUUID();
+            String originalFileName = image.getOriginalFilename();
+
             String savedFileName = uuid.toString() + "_" + originalFileName;
 
-            File newFile = new File(file + savedFileName);
+            file = new File(file + File.separator + savedFileName);
 
-            image.transferTo(new File(String.valueOf(newFile)));
+            image.transferTo(file);
 
             ImageDto imageDto = ImageDto.builder()
-                    .original_name(image.getOriginalFilename())
-                    .save_name(savedFileName)
-                    .path(newFile.getPath())
+                    .originalName(image.getOriginalFilename())
+                    .saveName(savedFileName)
+                    .url(file.getPath())
                     .build();
 
             Image save = imageRepository.save(imageDto.toEntity(post));
@@ -118,7 +122,6 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(post.getLikes().size())
-                .path(post.getImages().get(0).getPath())
                 .build();
     }
 
@@ -134,8 +137,12 @@ public class PostService {
                 .content(post.getContent())
                 .author(post.getAuthor())
                 .likes(post.getLikes().size())
-                .images(PostInfo.extractImagePaths(post.getImages()))
+                .images(post.getImages().stream().map(image -> imageUrl(image.getSaveName())).toList())
                 .build();
+    }
+
+    private String imageUrl(String saveName) {
+        return "/images/" + saveName;
     }
 
     @Transactional

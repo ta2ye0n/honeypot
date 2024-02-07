@@ -26,11 +26,14 @@ public class Image {
     private Post post;
 
     @NotEmpty
-    private String original_name;
+    @Column(name = "original_name")
+    private String originalName;
 
     @NotEmpty
-    private String save_name;
+    @Column(name = "save_name")
+    private String saveName;
 
-    private String path;
+    @Column(name = "url")
+    private String url;
 
 }
