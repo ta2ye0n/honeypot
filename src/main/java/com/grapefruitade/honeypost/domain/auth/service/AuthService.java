@@ -5,6 +5,8 @@ import com.grapefruitade.honeypost.domain.auth.dto.RegisterRequestDto;
 import com.grapefruitade.honeypost.domain.auth.dto.TokenDto;
 import com.grapefruitade.honeypost.domain.auth.dto.TokenRequestDto;
 import com.grapefruitade.honeypost.domain.auth.entity.RefreshToken;
+import com.grapefruitade.honeypost.domain.auth.exception.ExistUsernameException;
+import com.grapefruitade.honeypost.domain.auth.exception.TokenNotValidException;
 import com.grapefruitade.honeypost.domain.auth.repository.RefreshTokenRepository;
 import com.grapefruitade.honeypost.domain.user.dto.UserResponseDto;
 import com.grapefruitade.honeypost.domain.user.entity.User;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -28,17 +31,15 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
     public UserResponseDto register(RegisterRequestDto registerDto){
         if(userRepository.existsByUsername(registerDto.getUsername())){
-            throw new RuntimeException("이미 가입되어 있습니다.");
+            throw new ExistUsernameException();
         }
 
         User user = registerDto.user(passwordEncoder);
         return UserResponseDto.userResponseDto(userRepository.save(user));
     }
 
-    @Transactional
     public TokenDto login(LoginRequestDto loginRequestDto){
 
         UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
@@ -54,26 +55,24 @@ public class AuthService {
         return tokenDto;
     }
 
-    @Transactional
     public TokenDto refresh (TokenRequestDto tokenRequestDto){
 
         if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token이 유효하지 않습니다.");
+            throw new TokenNotValidException();
         }
 
         Authentication authentication =
                 tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
         RefreshToken refreshToken =
-                refreshTokenRepository.findByKey(authentication.getName())
-                        .orElseThrow(() -> new RuntimeException(("로그아웃 된 사용자입니다.")));
+                refreshTokenRepository.findById(authentication.getName())
+                        .orElseThrow(() -> new NullPointerException("로그아웃 된 사용자입니다."));
         if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+            throw new TokenNotValidException();
         }
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
         refreshTokenRepository.save(newRefreshToken);
         return tokenDto;
     }
-
 
 }
