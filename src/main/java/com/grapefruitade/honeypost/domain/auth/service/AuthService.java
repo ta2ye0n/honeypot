@@ -7,11 +7,13 @@ import com.grapefruitade.honeypost.domain.auth.dto.TokenRequestDto;
 import com.grapefruitade.honeypost.domain.auth.entity.RefreshToken;
 import com.grapefruitade.honeypost.domain.auth.exception.ExistUsernameException;
 import com.grapefruitade.honeypost.domain.auth.exception.TokenNotValidException;
+import com.grapefruitade.honeypost.domain.auth.exception.UserNotFoundException;
 import com.grapefruitade.honeypost.domain.auth.repository.RefreshTokenRepository;
 import com.grapefruitade.honeypost.domain.user.dto.UserResponseDto;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.domain.user.repository.UserRepository;
 import com.grapefruitade.honeypost.global.security.jwt.TokenProvider;
+import com.grapefruitade.honeypost.global.security.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,6 +32,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserUtil userUtil;
 
     public UserResponseDto register(RegisterRequestDto registerDto){
         if(userRepository.existsByUsername(registerDto.getUsername())){
@@ -74,5 +77,17 @@ public class AuthService {
         refreshTokenRepository.save(newRefreshToken);
         return tokenDto;
     }
+
+
+    public void logout() {
+
+        User user = userUtil.currentUser();
+        RefreshToken refreshToken = refreshTokenRepository.findById(String.valueOf(user.getId()))
+                .orElseThrow(() -> new UserNotFoundException());
+        refreshTokenRepository.delete(refreshToken);
+
+
+    }
+
 
 }
