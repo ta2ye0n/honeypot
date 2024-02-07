@@ -20,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(value = "/write", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> write(@Valid @RequestPart List<MultipartFile> images, @RequestPart WritePost write) {
+    public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write) {
         postService.writePost(write, images);
         return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
     }

@@ -33,10 +33,6 @@ public class PostService {
 
     @Transactional
     public void writePost(WritePost writePost, List<MultipartFile> images) {
-        if (images.size() > 7) {
-            throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
-        }
-
         Post post = Post.builder()
                 .title(writePost.getTitle())
                 .content(writePost.getContent())
@@ -46,6 +42,9 @@ public class PostService {
                 .build();
 
         if (images != null && !images.isEmpty()) {
+            if (images.size() > 7) {
+                throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
+            }
             saveImages(images, post);
         }
 
