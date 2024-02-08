@@ -128,7 +128,7 @@ public class PostService {
     public PostInfo info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
-
+        List<Image> images = imageRepository.findByPostId(id);
 
         return PostInfo.builder()
                 .postId(post.getId())
@@ -136,7 +136,7 @@ public class PostService {
                 .content(post.getContent())
                 .author(post.getAuthor())
                 .likes(post.getLikes().size())
-                .images(post.getImages().stream().map(image -> imageUrl(image.getSaveName())).toList())
+                .images(images.stream().map(image -> imageUrl(image.getSaveName())).toList())
                 .build();
     }
 

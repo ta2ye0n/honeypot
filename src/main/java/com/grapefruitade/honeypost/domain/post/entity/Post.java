@@ -43,9 +43,6 @@ public class Post {
     @Column(name = "author")
     private String author;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Image> images = new ArrayList<>();
-
     @ElementCollection
     @Column(name = "likes")
     private List<Long> likes;
