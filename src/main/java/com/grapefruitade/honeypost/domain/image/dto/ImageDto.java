@@ -11,7 +11,7 @@ public class ImageDto {
     private String originalName;
     private String saveName;
     private String url;
-    private Long post_id;
+    private Long postId;
 
     public Image toEntity(Post post) {
         return Image.builder()
@@ -23,11 +23,11 @@ public class ImageDto {
     }
 
     @Builder
-    public ImageDto(String original_name, String save_name, String path, Long post_id) {
+    public ImageDto(String original_name, String save_name, String path, Long postId) {
         this.originalName = original_name;
         this.saveName = save_name;
         this.url = path;
-        this.post_id = post_id;
+        this.postId = postId;
     }
 
 }
