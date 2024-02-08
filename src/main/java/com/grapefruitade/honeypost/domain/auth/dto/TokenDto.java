@@ -1,11 +1,10 @@
 package com.grapefruitade.honeypost.domain.auth.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Builder
-@Data
+@Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class TokenDto
 {
@@ -14,4 +13,6 @@ public class TokenDto
     private String accessToken;
     private String refreshToken;
     private Long accessTokenExpiresIn;
+    private Long refreshTokenExpiresIn;
+
 }

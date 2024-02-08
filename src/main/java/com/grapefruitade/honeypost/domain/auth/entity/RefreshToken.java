@@ -1,28 +1,18 @@
 package com.grapefruitade.honeypost.domain.auth.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-@Table(name = "RefreshToken")
-@Entity
 @Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RedisHash(value = "refreshToken", timeToLive = 60)
 public class RefreshToken {
 
+
     @Id
-    @Column(name = "refresh_key")
-    private String key;
+    private String token;
+    private Long userid;
+    private Long expiresAt;
 
-    @Column
-    private String value;
-
-    public RefreshToken updateValue(String token) {
-        this.value = token;
-        return this;
-    }
 }

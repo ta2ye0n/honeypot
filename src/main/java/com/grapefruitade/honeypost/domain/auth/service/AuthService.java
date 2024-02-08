@@ -5,9 +5,7 @@ import com.grapefruitade.honeypost.domain.auth.dto.RegisterRequestDto;
 import com.grapefruitade.honeypost.domain.auth.dto.TokenDto;
 import com.grapefruitade.honeypost.domain.auth.dto.TokenRequestDto;
 import com.grapefruitade.honeypost.domain.auth.entity.RefreshToken;
-import com.grapefruitade.honeypost.domain.auth.exception.ExistUsernameException;
-import com.grapefruitade.honeypost.domain.auth.exception.TokenNotValidException;
-import com.grapefruitade.honeypost.domain.auth.exception.UserNotFoundException;
+import com.grapefruitade.honeypost.domain.auth.exception.*;
 import com.grapefruitade.honeypost.domain.auth.repository.RefreshTokenRepository;
 import com.grapefruitade.honeypost.domain.user.dto.UserResponseDto;
 import com.grapefruitade.honeypost.domain.user.entity.User;
@@ -22,59 +20,70 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.MissingResourceException;
+
 @Transactional
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserUtil userUtil;
 
-    public UserResponseDto register(RegisterRequestDto registerDto){
-        if(userRepository.existsByUsername(registerDto.getUsername())){
+    public UserResponseDto register(RegisterRequestDto registerRequest){
+        if(userRepository.existsByUsername(registerRequest.getUsername())){
             throw new ExistUsernameException();
         }
 
-        User user = registerDto.user(passwordEncoder);
+        User user = registerRequest.user(passwordEncoder);
         return UserResponseDto.userResponseDto(userRepository.save(user));
     }
 
-    public TokenDto login(LoginRequestDto loginRequestDto){
+    public TokenDto login(LoginRequestDto loginRequest){
 
-        UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
+      User user = userRepository.findByUsername(loginRequest.getUsername())
+              .orElseThrow(() -> new UserNotFoundException());
 
-        refreshTokenRepository.save(refreshToken);
+      if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
+          throw new MismatchNotPassword();
+      }
+
+      TokenDto tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
+
+      saveRefreshToken(tokenDto, user);
 
         return tokenDto;
     }
 
-    public TokenDto refresh (TokenRequestDto tokenRequestDto){
+    private void saveRefreshToken(TokenDto tokenDto, User user) {
+        RefreshToken token = RefreshToken.builder()
+                .token(tokenDto.getRefreshToken())
+                .userid(user.getId())
+                .expiresAt(tokenDto.getRefreshTokenExpiresIn())
+                .build();
 
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new TokenNotValidException();
-        }
+        refreshTokenRepository.save(token);
+    }
 
-        Authentication authentication =
-                tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        RefreshToken refreshToken =
-                refreshTokenRepository.findById(authentication.getName())
-                        .orElseThrow(() -> new NullPointerException("로그아웃 된 사용자입니다."));
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new TokenNotValidException();
-        }
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
+    public TokenDto refresh (String RefreshToken){
+        String parseRefreshToken = tokenProvider.parseRefreshToken(RefreshToken);
+
+
+        RefreshToken validRefreshToken = refreshTokenRepository.findById(parseRefreshToken)
+                .orElseThrow(() -> new TokenExpirationException());
+
+        User user = userRepository.findById(validRefreshToken.getUserid())
+                .orElseThrow(() -> new UserNotFoundException());
+
+
+        TokenDto tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
+
+        saveRefreshToken(tokenDto, user);
+        refreshTokenRepository.deleteById(validRefreshToken.getToken());
+
         return tokenDto;
     }
 
@@ -82,10 +91,11 @@ public class AuthService {
     public void logout() {
 
         User user = userUtil.currentUser();
-        RefreshToken refreshToken = refreshTokenRepository.findById(String.valueOf(user.getId()))
-                .orElseThrow(() -> new UserNotFoundException());
+        RefreshToken refreshToken = refreshTokenRepository.findByUserid(user.getId());
+        if (refreshToken == null){
+            throw new UserNotFoundException();
+        }
         refreshTokenRepository.delete(refreshToken);
-
 
     }
 
