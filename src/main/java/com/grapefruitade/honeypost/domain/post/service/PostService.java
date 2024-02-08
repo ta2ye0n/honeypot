@@ -116,7 +116,7 @@ public class PostService {
 
     private InfoPost infoPost(Post post) {
         return InfoPost.builder()
-                .postId(post.getPostId())
+                .postId(post.getId())
                 .author(post.getAuthor())
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -131,7 +131,7 @@ public class PostService {
 
 
         return PostInfo.builder()
-                .postId(post.getPostId())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(post.getAuthor())
