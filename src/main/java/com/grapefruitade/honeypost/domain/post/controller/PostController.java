@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostInfo> infoPost (@PathVariable Long id) {
+    public ResponseEntity<PostDetails> infoPost (@PathVariable Long id) {
         return ResponseEntity.ok(postService.info(id));
     }
 

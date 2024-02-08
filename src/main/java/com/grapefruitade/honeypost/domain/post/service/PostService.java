@@ -6,7 +6,7 @@ import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
-import com.grapefruitade.honeypost.domain.post.dto.PostInfo;
+import com.grapefruitade.honeypost.domain.post.dto.PostDetails;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
@@ -80,12 +80,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostInfo info(Long id) {
+    public PostDetails info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
         List<Image> images = imageRepository.findByPostId(id);
 
-        return PostInfo.builder()
+        return PostDetails.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
