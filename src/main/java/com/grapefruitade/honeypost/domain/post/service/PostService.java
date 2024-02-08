@@ -1,8 +1,8 @@
 package com.grapefruitade.honeypost.domain.post.service;
 
-import com.grapefruitade.honeypost.domain.image.dto.ImageDto;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
+import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
@@ -13,16 +13,12 @@ import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.global.exception.CustomException;
 import com.grapefruitade.honeypost.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +26,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
+    private final ImageUtil imageUtil;
 
     @Transactional
     public void writePost(WritePost writePost, List<MultipartFile> images) {
@@ -41,54 +38,12 @@ public class PostService {
                 .book(writePost.getBook())
                 .build();
 
-        if (images != null && !images.isEmpty()) {
-            if (images.size() > 7) {
-                throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
-            }
-            saveImages(images, post);
-        }
+        imageUtil.saveImages(images, post);
 
         postRepository.save(post);
     }
 
-    @SneakyThrows
-    private List<Long> saveImages(List<MultipartFile> images, Post post) {
-        List<Long> saveImageId = new ArrayList<>();
 
-        for (MultipartFile image : images) {
-            if (image != null &&
-                    !image.getOriginalFilename().toLowerCase().endsWith(".png") &&
-                    !image.getOriginalFilename().toLowerCase().endsWith(".jpg") &&
-                    !image.getOriginalFilename().toLowerCase().endsWith(".jpeg")) {
-                throw new CustomException(ErrorCode.INVALID_EXTENSION);
-            }
-
-            File file = new File(System.getProperty("user.dir") + File.separator + "/src/main/resources/static/images/");
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-
-            UUID uuid = UUID.randomUUID();
-            String originalFileName = image.getOriginalFilename();
-
-            String savedFileName = uuid.toString() + "_" + originalFileName;
-
-            file = new File(file + File.separator + savedFileName);
-
-            image.transferTo(file);
-
-            ImageDto imageDto = ImageDto.builder()
-                    .originalName(image.getOriginalFilename())
-                    .saveName(savedFileName)
-                    .url(file.getPath())
-                    .build();
-
-            Image save = imageRepository.save(imageDto.toEntity(post));
-            saveImageId.add(save.getId());
-        }
-
-        return saveImageId;
-    }
 
     @Transactional
     public void modifyPost(Long id, ModifyPost modify) {
