@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final ImageUtil imageUtil;
 
-    @Transactional
+    @Transactional(rollbackFor = {SQLException.class})
     public void writePost(WritePost writePost, List<MultipartFile> images) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
@@ -44,7 +45,7 @@ public class PostService {
     }
 
 
-    @Transactional
+    @Transactional(noRollbackFor = {CustomException.class})
     public void modifyPost(Long id, ModifyPost modify) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
@@ -52,7 +53,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = {CustomException.class})
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
@@ -78,7 +79,7 @@ public class PostService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = {CustomException.class})
     public PostDetails info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
