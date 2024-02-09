@@ -3,7 +3,6 @@ package com.grapefruitade.honeypost.domain.auth.controller;
 import com.grapefruitade.honeypost.domain.auth.dto.LoginRequestDto;
 import com.grapefruitade.honeypost.domain.auth.dto.RegisterRequestDto;
 import com.grapefruitade.honeypost.domain.auth.dto.TokenDto;
-import com.grapefruitade.honeypost.domain.auth.dto.TokenRequestDto;
 import com.grapefruitade.honeypost.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +34,9 @@ public class AuthController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> logout(){
-        authService.logout();
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> logout(@RequestHeader String refreshToken){
+        authService.logout(refreshToken);
+        return ResponseEntity.ok().build();
     }
 
 }
