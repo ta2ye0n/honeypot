@@ -4,11 +4,13 @@ import com.grapefruitade.honeypost.domain.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Builder
 @Entity
+@Table(name = "HoneyPot")
 public class User {
 
     @Id
