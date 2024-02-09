@@ -44,7 +44,6 @@ public class PostService {
     }
 
 
-
     @Transactional
     public void modifyPost(Long id, ModifyPost modify) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
@@ -101,15 +100,7 @@ public class PostService {
 
     @Transactional
     public List<InfoPost> searchPost(String keyword) {
-        List<Post> allPost = postRepository.findAll();
-        List<Post> result = new ArrayList<>();
-
-        for (Post post : allPost) {
-            if (post.getContent().contains(keyword) ||
-                    post.getTitle().contains(keyword)) {
-                result.add(post);
-            }
-        }
+        List<Post> result = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
 
         return result.stream()
                 .map(this::infoPost)
@@ -118,17 +109,11 @@ public class PostService {
 
     @Transactional
     public List<InfoPost> hotTopic() {
-        List<Post> all = postRepository.findAll();
-        List<Post> result = new ArrayList<>();
-
-        for (Post post : all) {
-            if (post.getLikes().size() >= 50) {
-                result.add(post);
-            }
-        }
+        List<Post> result = postRepository.findByLikesSizeGreaterThan50();
 
         return result.stream()
                 .map(this::infoPost)
                 .collect(Collectors.toList());
     }
+
 }
