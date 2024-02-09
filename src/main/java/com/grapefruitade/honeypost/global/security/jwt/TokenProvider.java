@@ -1,8 +1,8 @@
 package com.grapefruitade.honeypost.global.security.jwt;
 
 import com.grapefruitade.honeypost.domain.auth.dto.TokenDto;
-import com.grapefruitade.honeypost.domain.auth.exception.TokenExpirationException;
-import com.grapefruitade.honeypost.domain.auth.exception.TokenNotValidException;
+import com.grapefruitade.honeypost.global.security.exception.TokenExpirationException;
+import com.grapefruitade.honeypost.global.security.exception.TokenNotValidException;
 import com.grapefruitade.honeypost.domain.user.enums.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
