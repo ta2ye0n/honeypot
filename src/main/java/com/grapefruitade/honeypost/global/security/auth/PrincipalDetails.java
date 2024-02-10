@@ -1,4 +1,5 @@
 package com.grapefruitade.honeypost.global.security.auth;
+import com.grapefruitade.honeypost.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @ToString
 @AllArgsConstructor
@@ -14,18 +16,21 @@ import java.util.Collection;
 @Builder
 public class PrincipalDetails implements UserDetails {
 
-    private Long id;
-    private String username;
-    private String password;
-    private Collection<GrantedAuthority> role;
+    private User user;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role;
+        return Collections.singleton(user.getRole());
     }
     @Override
     public String getUsername() {
-        return this.username;
+        return user.getUsername();
+    }
+
+    @Override
+    public String getPassword(){
+        return user.getPassword();
     }
 
     @Override
