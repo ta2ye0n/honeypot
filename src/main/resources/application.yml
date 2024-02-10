@@ -1,1 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 10MB
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
