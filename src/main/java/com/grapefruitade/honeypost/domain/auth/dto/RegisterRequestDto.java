@@ -28,8 +28,5 @@ public class RegisterRequestDto {
                 .nickname(nickname)
                 .build();
     }
-
-
-
-
+    
 }
