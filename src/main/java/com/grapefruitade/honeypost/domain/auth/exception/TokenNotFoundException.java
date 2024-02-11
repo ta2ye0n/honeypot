@@ -9,6 +9,4 @@ public class TokenNotFoundException extends CustomException {
         super(ErrorCode.TOKEN_NOT_FOUND);
     }
 
-
-
 }
