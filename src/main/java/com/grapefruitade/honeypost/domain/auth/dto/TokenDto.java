@@ -6,8 +6,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenDto
-{
+public class TokenDto {
 
     private String grantType;
     private String accessToken;
