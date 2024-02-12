@@ -25,6 +25,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
     }
 
+    @PostMapping(value = "/preview", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @RequestPart Long id) {
+        postService.previewImage(previewImage, id);
+        return ResponseEntity.status(HttpStatus.OK).body("썸네일이 추가 되었습니다.");
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<String> modify(@PathVariable Long id, @RequestBody ModifyPost modify) {
         postService.modifyPost(id, modify);
@@ -32,28 +38,28 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete (@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.status(HttpStatus.OK).body("글 삭제가 완료되었습니다.");
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<InfoPost>> listPost (@RequestParam Category category) {
+    public ResponseEntity<List<InfoPost>> listPost(@RequestParam Category category) {
         return ResponseEntity.ok(postService.postList(category));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDetails> infoPost (@PathVariable Long id) {
+    public ResponseEntity<PostDetails> infoPost(@PathVariable Long id) {
         return ResponseEntity.ok(postService.info(id));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<InfoPost>> searchPost (@RequestParam String keyword) {
+    public ResponseEntity<List<InfoPost>> searchPost(@RequestParam String keyword) {
         return ResponseEntity.ok(postService.searchPost(keyword));
     }
 
     @GetMapping("/hot topic")
-    public ResponseEntity<List<InfoPost>> hotTopic () {
+    public ResponseEntity<List<InfoPost>> hotTopic() {
         return ResponseEntity.ok(postService.hotTopic());
     }
 }

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +41,17 @@ public class PostService {
         imageUtil.saveImages(images, post);
 
         postRepository.save(post);
+    }
+
+    @Transactional(rollbackFor = {SQLException.class}, noRollbackFor = {CustomException.class})
+    public void previewImage(MultipartFile image, Long id) {
+        if (image != null && !image.isEmpty()) {
+            Post post = postRepository.findById(id)
+                    .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+
+            imageUtil.saveImage(image, post);
+        }
+
     }
 
 
@@ -70,12 +80,15 @@ public class PostService {
     }
 
     private InfoPost infoPost(Post post) {
+        String preview = post.getPreviewUrl() != null ? imageUrl(post.getPreviewUrl()) : null;
+
         return InfoPost.builder()
                 .postId(post.getId())
                 .author(post.getAuthor())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(post.getLikes().size())
+                .previewImage(preview)
                 .build();
     }
 
@@ -84,6 +97,10 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
         List<Image> images = imageRepository.findByPostId(id);
+
+        if (post.getPreviewUrl() != null) {
+            images.remove(images.size() - 1);
+        }
 
         return PostDetails.builder()
                 .postId(post.getId())

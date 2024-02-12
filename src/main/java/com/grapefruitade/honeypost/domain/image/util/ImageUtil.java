@@ -21,6 +21,7 @@ import java.util.UUID;
 public class ImageUtil {
     private final ImageRepository imageRepository;
 
+    // 게시글 이미지들
     public List<Long> saveImages(List<MultipartFile> images, Post post) {
         List<Long> saveImageId = new ArrayList<>();
 
@@ -42,6 +43,20 @@ public class ImageUtil {
         }
 
         return saveImageId;
+    }
+
+    // 썸네일
+    public Long saveImage(MultipartFile image, Post post) {
+        if (validImageFile(image)) {
+            throw new CustomException(ErrorCode.INVALID_EXTENSION);
+        }
+
+        ImageDto imageDto = savedImage(image);
+
+        Image save = imageRepository.save(imageDto.toEntity(post));
+        post.setPreviewUrl(save.getSaveName());
+
+        return save.getId();
     }
 
     // 이미지 확장자 검사
