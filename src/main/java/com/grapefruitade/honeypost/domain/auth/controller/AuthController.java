@@ -34,9 +34,9 @@ public class AuthController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> logout(@RequestHeader String refreshToken){
+    public ResponseEntity<String> logout(@RequestHeader String refreshToken){
         authService.logout(refreshToken);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("로그아웃이 완료되었습니다.");
     }
 
 }
