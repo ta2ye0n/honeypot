@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.global.exception;
+package com.grapefruitade.honeypost.global.error;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

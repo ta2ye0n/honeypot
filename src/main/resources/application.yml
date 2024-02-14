@@ -1,21 +1,39 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 10MB
 
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
+
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MariaDBDialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+
+jwt:
+  secret: ${JWT_SECRET}
+
