@@ -3,6 +3,7 @@ package com.grapefruitade.honeypost.domain.post.entity;
 import com.grapefruitade.honeypost.domain.post.Book;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.OTT;
+import com.grapefruitade.honeypost.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,8 +39,9 @@ public class Post {
     @Column(name = "book")
     private Book book;
 
-    @Column(name = "author")
-    private String author;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author")
+    private User author;
 
     private String previewUrl;
 

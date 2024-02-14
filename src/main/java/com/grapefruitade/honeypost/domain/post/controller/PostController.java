@@ -3,10 +3,12 @@ package com.grapefruitade.honeypost.domain.post.controller;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.*;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
+import com.grapefruitade.honeypost.global.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +22,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(value = "/write", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write) {
-        postService.writePost(write, images);
+    public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write, @AuthenticationPrincipal PrincipalDetails userDetails) {
+        postService.writePost(write, images, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
     }
 

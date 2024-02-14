@@ -10,6 +10,7 @@ import com.grapefruitade.honeypost.domain.post.dto.PostDetails;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
+import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,11 @@ public class PostService {
     private final ImageUtil imageUtil;
 
     @Transactional(rollbackFor = {SQLException.class})
-    public void writePost(WritePost writePost, List<MultipartFile> images) {
+    public void writePost(WritePost writePost, List<MultipartFile> images, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
                 .content(writePost.getContent())
+                .author(user)
                 .category(writePost.getCategory())
                 .ott(writePost.getOtt())
                 .book(writePost.getBook())
@@ -84,7 +86,7 @@ public class PostService {
 
         return InfoPost.builder()
                 .postId(post.getId())
-                .author(post.getAuthor())
+                .author(post.getAuthor().getNickname())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(post.getLikes().size())
@@ -106,7 +108,7 @@ public class PostService {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .author(post.getAuthor())
+                .author(post.getAuthor().getNickname())
                 .likes(post.getLikes().size())
                 .images(images.stream().map(image -> imageUrl(image.getSaveName())).toList())
                 .build();
