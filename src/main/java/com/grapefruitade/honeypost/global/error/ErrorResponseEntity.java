@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.global.exception;
+package com.grapefruitade.honeypost.global.error;
 
 import lombok.Builder;
 import lombok.Data;

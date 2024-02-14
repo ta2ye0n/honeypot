@@ -10,15 +10,14 @@ import com.grapefruitade.honeypost.domain.post.dto.PostDetails;
 import com.grapefruitade.honeypost.domain.post.dto.WritePost;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
-import com.grapefruitade.honeypost.global.exception.CustomException;
-import com.grapefruitade.honeypost.global.exception.ErrorCode;
+import com.grapefruitade.honeypost.global.error.CustomException;
+import com.grapefruitade.honeypost.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
