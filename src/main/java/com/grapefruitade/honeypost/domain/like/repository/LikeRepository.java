@@ -15,6 +15,6 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
 
     Integer countByPost (Post post);
 
-    @Query("SELECT l.post FROM LikeEntity l GROUP BY l.post HAVING COUNT(l.post) >= 1")
+    @Query("SELECT l.post FROM LikeEntity l GROUP BY l.post HAVING COUNT(l.post) >= 50")
     List<Post> findByLikesSizeGreaterThan50();
 }
