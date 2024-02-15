@@ -3,6 +3,7 @@ package com.grapefruitade.honeypost.domain.post.service;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
 import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
+import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
 import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
@@ -28,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final ImageUtil imageUtil;
+    private final LikeRepository likeRepository;
 
     @Transactional(rollbackFor = {SQLException.class})
     public void writePost(WritePost writePost, List<MultipartFile> images, User user) {
@@ -89,7 +91,7 @@ public class PostService {
                 .author(post.getAuthor().getNickname())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .likes(post.getLikes().size())
+                .likes(likeRepository.countByPost(post))
                 .previewImage(preview)
                 .build();
     }
@@ -109,7 +111,7 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(post.getAuthor().getNickname())
-                .likes(post.getLikes().size())
+                .likes(likeRepository.countByPost(post))
                 .images(images.stream().map(image -> imageUrl(image.getSaveName())).toList())
                 .build();
     }
@@ -129,7 +131,7 @@ public class PostService {
 
     @Transactional
     public List<InfoPost> hotTopic() {
-        List<Post> result = postRepository.findByLikesSizeGreaterThan50();
+        List<Post> result = likeRepository.findByLikesSizeGreaterThan50();
 
         return result.stream()
                 .map(this::infoPost)

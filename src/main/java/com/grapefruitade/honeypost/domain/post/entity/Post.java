@@ -1,5 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.entity;
 
+import com.grapefruitade.honeypost.domain.like.entity.LikeEntity;
 import com.grapefruitade.honeypost.domain.post.Book;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.OTT;
@@ -44,6 +45,9 @@ public class Post {
     private User author;
 
     private String previewUrl;
+
+    @OneToMany
+    private List<LikeEntity> likes;
 
     public void modifyPost(String title, String content) {
         this.title = title;
