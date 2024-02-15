@@ -42,7 +42,9 @@ public class PostService {
                 .book(writePost.getBook())
                 .build();
 
-        imageUtil.saveImages(images, post);
+        if (images != null) {
+            imageUtil.saveImages(images, post);
+        }
 
         postRepository.save(post);
     }
