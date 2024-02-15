@@ -45,10 +45,6 @@ public class Post {
 
     private String previewUrl;
 
-    @ElementCollection
-    @Column(name = "likes")
-    private List<Long> likes;
-
     public void modifyPost(String title, String content) {
         this.title = title;
         this.content = content;

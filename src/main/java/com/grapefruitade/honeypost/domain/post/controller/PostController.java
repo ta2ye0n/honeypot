@@ -1,5 +1,7 @@
 package com.grapefruitade.honeypost.domain.post.controller;
 
+import com.grapefruitade.honeypost.domain.like.dto.PostId;
+import com.grapefruitade.honeypost.domain.like.service.LikeService;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.*;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
@@ -20,6 +22,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final LikeService likeService;
 
     @PostMapping(value = "/write", consumes = {"multipart/form-data"})
     public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write, @AuthenticationPrincipal PrincipalDetails userDetails) {
@@ -63,5 +66,10 @@ public class PostController {
     @GetMapping("/hot topic")
     public ResponseEntity<List<InfoPost>> hotTopic() {
         return ResponseEntity.ok(postService.hotTopic());
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<String> like(@RequestBody PostId postId, @AuthenticationPrincipal PrincipalDetails userDetails) {
+        return ResponseEntity.ok(likeService.toggleLike(postId, userDetails.getUser()));
     }
 }
