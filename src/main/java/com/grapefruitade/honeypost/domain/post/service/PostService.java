@@ -31,7 +31,7 @@ public class PostService {
     private final ImageUtil imageUtil;
     private final LikeRepository likeRepository;
 
-    @Transactional(rollbackFor = {SQLException.class})
+    @Transactional(rollbackFor = {Exception.class})
     public void writePost(WritePost writePost, List<MultipartFile> images, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
@@ -49,7 +49,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @Transactional(rollbackFor = {SQLException.class}, noRollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {Exception.class, CustomException.class})
     public void previewImage(MultipartFile image, Long id) {
         if (image != null && !image.isEmpty()) {
             Post post = postRepository.findById(id)
@@ -61,7 +61,7 @@ public class PostService {
     }
 
 
-    @Transactional(noRollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {CustomException.class})
     public void modifyPost(Long id, ModifyPost modify) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
@@ -69,7 +69,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @Transactional(noRollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {CustomException.class})
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
@@ -98,7 +98,7 @@ public class PostService {
                 .build();
     }
 
-    @Transactional(noRollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {CustomException.class})
     public PostDetails info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
