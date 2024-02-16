@@ -21,7 +21,10 @@ public enum ErrorCode {
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"),
     MISMATCH_USER_PASSWORD(HttpStatus.BAD_REQUEST, "MISMATCH_USER_PASSWORD"),
-    ALREADY_EXIST_USERNAME(HttpStatus.CONFLICT, "ALREADY_EXIST_USERNAME");
+    ALREADY_EXIST_USERNAME(HttpStatus.CONFLICT, "ALREADY_EXIST_USERNAME"),
+
+    // COMMENT
+    INVALID_COMMENT(HttpStatus.BAD_REQUEST, " INVALID_COMMENT");
 
     private final HttpStatus httpStatus;
     private final String message;
