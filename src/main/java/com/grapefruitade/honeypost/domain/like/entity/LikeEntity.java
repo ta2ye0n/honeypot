@@ -3,8 +3,10 @@ package com.grapefruitade.honeypost.domain.like.entity;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LikeEntity {
 
     @Id
@@ -22,8 +24,5 @@ public class LikeEntity {
     public LikeEntity(User user, Post post) {
         this.user = user;
         this.post = post;
-    }
-
-    public LikeEntity() {
     }
 }
