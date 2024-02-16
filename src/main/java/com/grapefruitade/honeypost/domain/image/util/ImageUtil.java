@@ -48,7 +48,7 @@ public class ImageUtil {
         ImageDto imageDto = savedImage(image);
 
         Image save = imageRepository.save(imageDto.toEntity(post));
-        post.setPreviewUrl(save.getSaveName());
+        post.uploadPreviewUrl(save.getSaveName());
 
         return save.getId();
     }

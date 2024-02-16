@@ -51,7 +51,7 @@ public class Post {
         this.content = content;
     }
 
-    public void setPreviewUrl(String previewUrl) {
+    public void uploadPreviewUrl(String previewUrl) {
         this.previewUrl = previewUrl;
     }
 }
