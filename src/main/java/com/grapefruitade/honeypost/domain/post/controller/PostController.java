@@ -6,6 +6,7 @@ import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.*;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
 import com.grapefruitade.honeypost.global.security.auth.PrincipalDetails;
+import com.grapefruitade.honeypost.global.util.UserUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,11 @@ public class PostController {
 
     private final PostService postService;
     private final LikeService likeService;
+    private final UserUtil userUtil;
 
     @PostMapping(value = "/write", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write, @AuthenticationPrincipal PrincipalDetails userDetails) {
-        postService.writePost(write, images, userDetails.getUser());
+    public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write) {
+        postService.writePost(write, images, userUtil.currentUser());
         return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
     }
 
@@ -69,7 +71,7 @@ public class PostController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<String> like(@RequestBody PostId postId, @AuthenticationPrincipal PrincipalDetails userDetails) {
-        return ResponseEntity.ok(likeService.toggleLike(postId, userDetails.getUser()));
+    public ResponseEntity<String> like(@RequestBody PostId postId) {
+        return ResponseEntity.ok(likeService.toggleLike(postId, userUtil.currentUser()));
     }
 }

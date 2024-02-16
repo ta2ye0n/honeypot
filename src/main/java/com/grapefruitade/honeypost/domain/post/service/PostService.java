@@ -14,6 +14,7 @@ import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
+import com.grapefruitade.honeypost.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
