@@ -70,8 +70,8 @@ public class PostController {
         return ResponseEntity.ok(postService.hotTopic());
     }
 
-    @PostMapping("/like")
-    public ResponseEntity<String> like(@RequestBody PostId postId) {
-        return ResponseEntity.ok(likeService.toggleLike(postId, userUtil.currentUser()));
+    @PostMapping("/like/{id}")
+    public ResponseEntity<String> like(@Valid @PathVariable Long id) {
+        return ResponseEntity.ok(likeService.toggleLike(id, userUtil.currentUser()));
     }
 }

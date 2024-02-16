@@ -20,8 +20,8 @@ public class LikeService {
     private final PostRepository postRepository;
 
     @Transactional
-    public String toggleLike(PostId postId, User user) {
-        Post post = postRepository.findById(postId.getPostId())
+    public String toggleLike(Long id, User user) {
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
         if (likeRepository.existsByUserAndPost(user, post)) {
