@@ -49,7 +49,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @Transactional(rollbackFor = {Exception.class, CustomException.class})
+    @Transactional(rollbackFor = {Exception.class})
     public void previewImage(MultipartFile image, Long id) {
         if (image != null && !image.isEmpty()) {
             Post post = postRepository.findById(id)
@@ -61,7 +61,7 @@ public class PostService {
     }
 
 
-    @Transactional(rollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {Exception.class})
     public void modifyPost(Long id, ModifyPost modify) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
@@ -69,7 +69,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @Transactional(rollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {Exception.class})
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
@@ -98,7 +98,7 @@ public class PostService {
                 .build();
     }
 
-    @Transactional(rollbackFor = {CustomException.class})
+    @Transactional(rollbackFor = {Exception.class})
     public PostDetails info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
