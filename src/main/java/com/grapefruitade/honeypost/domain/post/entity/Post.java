@@ -46,9 +46,6 @@ public class Post {
 
     private String previewUrl;
 
-    @OneToMany
-    private List<LikeEntity> likes;
-
     public void modifyPost(String title, String content) {
         this.title = title;
         this.content = content;
