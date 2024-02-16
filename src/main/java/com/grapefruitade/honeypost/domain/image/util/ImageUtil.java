@@ -25,10 +25,8 @@ public class ImageUtil {
     public List<Long> saveImages(List<MultipartFile> images, Post post) {
         List<Long> saveImageId = new ArrayList<>();
 
-        if (images != null && !images.isEmpty()) {
-            if (images.size() > 7) {
-                throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
-            }
+        if (images.size() > 7) {
+            throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
         }
 
         for (MultipartFile image : images) {

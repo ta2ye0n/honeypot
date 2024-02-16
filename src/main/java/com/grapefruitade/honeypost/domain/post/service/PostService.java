@@ -51,7 +51,7 @@ public class PostService {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    public void previewImage(MultipartFile image, Long id) {
+    public void uploadPreviewImage(MultipartFile image, Long id) {
         if (image != null && !image.isEmpty()) {
             Post post = postRepository.findById(id)
                     .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
