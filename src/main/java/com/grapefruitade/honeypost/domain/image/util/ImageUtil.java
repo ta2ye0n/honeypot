@@ -43,6 +43,7 @@ public class ImageUtil {
 
     // 썸네일
     public Long saveImage(MultipartFile image, Post post) {
+        validImageFile(image);
         ImageDto imageDto = savedImage(image);
 
         Image save = imageRepository.save(imageDto.toEntity(post));
@@ -53,11 +54,11 @@ public class ImageUtil {
 
     // 이미지 확장자 검사
     private void validImageFile(MultipartFile image) {
+        List<String> imageExtensions = List.of(".png", ".jpg", ".jpeg");
+
         String originalName = image.getOriginalFilename();
          if (image != null &&
-                !originalName.toLowerCase().endsWith(".png") &&
-                !originalName.toLowerCase().endsWith(".jpg") &&
-                !originalName.toLowerCase().endsWith(".jpeg")) {
+                originalName.toLowerCase().endsWith(imageExtensions.toString())) {
              throw new CustomException(ErrorCode.INVALID_EXTENSION);
          }
     }
