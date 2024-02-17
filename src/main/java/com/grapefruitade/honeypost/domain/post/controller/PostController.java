@@ -34,7 +34,9 @@ public class PostController {
 
     @PostMapping(value = "/preview", consumes = {"multipart/form-data"})
     public ResponseEntity<String> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @RequestPart Long id) {
-        postService.uploadPreviewImage(previewImage, id);
+        if (previewImage != null) {
+            postService.uploadPreviewImage(previewImage, id);
+        }
         return ResponseEntity.status(HttpStatus.OK).body("썸네일이 추가 되었습니다.");
     }
 

@@ -52,12 +52,10 @@ public class PostService {
 
     @Transactional(rollbackFor = {Exception.class})
     public void uploadPreviewImage(MultipartFile image, Long id) {
-        if (image != null && !image.isEmpty()) {
-            Post post = postRepository.findById(id)
-                    .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
-            imageUtil.saveImage(image, post);
-        }
+        imageUtil.saveImage(image, post);
 
     }
 
