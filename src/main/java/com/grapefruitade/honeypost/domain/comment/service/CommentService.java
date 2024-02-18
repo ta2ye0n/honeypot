@@ -3,8 +3,9 @@ package com.grapefruitade.honeypost.domain.comment.service;
 
 import com.grapefruitade.honeypost.domain.comment.dto.WriteCommentDto;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
-import com.grapefruitade.honeypost.domain.comment.exception.InvalidComment;
-import com.grapefruitade.honeypost.domain.comment.exception.InvalidPost;
+import com.grapefruitade.honeypost.domain.comment.exception.CommentNotFound;
+import com.grapefruitade.honeypost.domain.comment.exception.PostNotFound;
+import com.grapefruitade.honeypost.domain.comment.exception.UserNotSame;
 import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
@@ -27,7 +28,7 @@ public class CommentService {
 
         User user = userUtil.currentUser();
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new InvalidPost());
+                .orElseThrow(() -> new PostNotFound());
 
         Comment comment = writeComment.toEntity(user, post);
 
@@ -35,13 +36,18 @@ public class CommentService {
 
     }
 
-    public void deleteComment(Long id){
+    public void deleteComment(Long id) {
+
+        User user = userUtil.currentUser();
 
         Comment comment = commentRepository.findById(id).orElseThrow(() ->
-                new InvalidComment());
+                new CommentNotFound());
+
+        if (user.getUsername() != (comment.getAuthor().getUsername())) {
+            throw new UserNotSame();
+        }
 
         commentRepository.delete(comment);
 
     }
-
 }
