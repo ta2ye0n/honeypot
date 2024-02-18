@@ -20,12 +20,12 @@ public class CommentController {
     @PostMapping("/{postId}/write")
     public ResponseEntity<String> write(@PathVariable Long postId, @RequestBody WriteCommentDto writeCommentDto) {
         commentService.writeComment(postId, writeCommentDto);
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 작성이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글 작성이 완료되었습니다.");
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<String> delete(@PathVariable Long commentId){
         commentService.deleteComment(commentId);
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제가 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("댓글 삭제가 완료되었습니다.");
     }
 }
