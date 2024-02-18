@@ -29,9 +29,9 @@ public class ImageUtil {
             throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
         }
 
-        for (MultipartFile image : images) {
-            validImageFile(image);
+        validImageFiles(images);
 
+        for (MultipartFile image : images) {
             ImageDto imageDto = savedImage(image);
 
             Image save = imageRepository.save(imageDto.toEntity(post));
@@ -53,14 +53,26 @@ public class ImageUtil {
     }
 
     // 이미지 확장자 검사
+    private void validImageFiles(List<MultipartFile> images) {
+        List<String> imageExtensions = List.of(".png", ".jpg", ".jpeg");
+
+        for (MultipartFile image: images) {
+            String originalName = image.getOriginalFilename();
+            if (image != null &&
+                    originalName.toLowerCase().endsWith(imageExtensions.toString())) {
+                throw new CustomException(ErrorCode.INVALID_EXTENSION);
+            }
+        }
+    }
+
     private void validImageFile(MultipartFile image) {
         List<String> imageExtensions = List.of(".png", ".jpg", ".jpeg");
 
         String originalName = image.getOriginalFilename();
-         if (image != null &&
+        if (image != null &&
                 originalName.toLowerCase().endsWith(imageExtensions.toString())) {
-             throw new CustomException(ErrorCode.INVALID_EXTENSION);
-         }
+            throw new CustomException(ErrorCode.INVALID_EXTENSION);
+        }
     }
 
     // 이미지 저장 + 객체 생성
