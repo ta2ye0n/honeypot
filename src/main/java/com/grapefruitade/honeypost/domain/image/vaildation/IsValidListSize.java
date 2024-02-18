@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 public @interface IsValidListSize {
     String message() default "";
 
-    int max() default 3;
+    int max() default 7;
 
     Class<?>[] groups() default {};
 
