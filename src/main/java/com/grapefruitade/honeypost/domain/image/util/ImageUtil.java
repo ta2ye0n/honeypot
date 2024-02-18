@@ -3,6 +3,7 @@ package com.grapefruitade.honeypost.domain.image.util;
 import com.grapefruitade.honeypost.domain.image.dto.ImageDto;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
+import com.grapefruitade.honeypost.domain.image.vaildation.IsValidListSize;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
@@ -22,7 +23,7 @@ public class ImageUtil {
     private final ImageRepository imageRepository;
 
     // 게시글 이미지들
-    public List<Long> saveImages(List<MultipartFile> images, Post post) {
+    public List<Long> saveImages(@IsValidListSize List<MultipartFile> images, Post post) {
         List<Long> saveImageId = new ArrayList<>();
 
         if (images.size() > 7) {
