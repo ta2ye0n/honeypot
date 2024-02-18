@@ -1,13 +1,13 @@
 package com.grapefruitade.honeypost.domain.post.entity;
 
-import com.grapefruitade.honeypost.domain.image.entity.Image;
+import com.grapefruitade.honeypost.domain.like.entity.LikeEntity;
 import com.grapefruitade.honeypost.domain.post.Book;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.OTT;
+import com.grapefruitade.honeypost.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,15 +40,18 @@ public class Post {
     @Column(name = "book")
     private Book book;
 
-    @Column(name = "author")
-    private String author;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author")
+    private User author;
 
-    @ElementCollection
-    @Column(name = "likes")
-    private List<Long> likes;
+    private String previewUrl;
 
     public void modifyPost(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void uploadPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
     }
 }

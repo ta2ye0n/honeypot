@@ -3,6 +3,7 @@ package com.grapefruitade.honeypost.domain.image.util;
 import com.grapefruitade.honeypost.domain.image.dto.ImageDto;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
+import com.grapefruitade.honeypost.domain.image.vaildation.IsValidListSize;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
@@ -21,20 +22,17 @@ import java.util.UUID;
 public class ImageUtil {
     private final ImageRepository imageRepository;
 
-    public List<Long> saveImages(List<MultipartFile> images, Post post) {
+    // 게시글 이미지들
+    public List<Long> saveImages(@IsValidListSize List<MultipartFile> images, Post post) {
         List<Long> saveImageId = new ArrayList<>();
 
-        if (images != null && !images.isEmpty()) {
-            if (images.size() > 7) {
-                throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
-            }
+        if (images.size() > 7) {
+            throw new CustomException(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
         }
 
-        for (MultipartFile image : images) {
-            if (validImageFile(image)) {
-                throw new CustomException(ErrorCode.INVALID_EXTENSION);
-            }
+        validImageFiles(images);
 
+        for (MultipartFile image : images) {
             ImageDto imageDto = savedImage(image);
 
             Image save = imageRepository.save(imageDto.toEntity(post));
@@ -44,13 +42,38 @@ public class ImageUtil {
         return saveImageId;
     }
 
+    // 썸네일
+    public Long saveImage(MultipartFile image, Post post) {
+        validImageFile(image);
+        ImageDto imageDto = savedImage(image);
+
+        Image save = imageRepository.save(imageDto.toEntity(post));
+        post.uploadPreviewUrl(save.getSaveName());
+
+        return save.getId();
+    }
+
     // 이미지 확장자 검사
-    private Boolean validImageFile(MultipartFile image) {
+    private void validImageFiles(List<MultipartFile> images) {
+        List<String> imageExtensions = List.of(".png", ".jpg", ".jpeg");
+
+        for (MultipartFile image: images) {
+            String originalName = image.getOriginalFilename();
+            if (image != null &&
+                    originalName.toLowerCase().endsWith(imageExtensions.toString())) {
+                throw new CustomException(ErrorCode.INVALID_EXTENSION);
+            }
+        }
+    }
+
+    private void validImageFile(MultipartFile image) {
+        List<String> imageExtensions = List.of(".png", ".jpg", ".jpeg");
+
         String originalName = image.getOriginalFilename();
-        return image != null &&
-                !originalName.toLowerCase().endsWith(".png") &&
-                !originalName.toLowerCase().endsWith(".jpg") &&
-                !originalName.toLowerCase().endsWith(".jpeg");
+        if (image != null &&
+                originalName.toLowerCase().endsWith(imageExtensions.toString())) {
+            throw new CustomException(ErrorCode.INVALID_EXTENSION);
+        }
     }
 
     // 이미지 저장 + 객체 생성

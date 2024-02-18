@@ -11,7 +11,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByCategory(Category category);
 
     List<Post> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword);
-
-    @Query("SELECT e FROM Post e WHERE SIZE(e.likes) >= 50")
-    List<Post> findByLikesSizeGreaterThan50();
 }
