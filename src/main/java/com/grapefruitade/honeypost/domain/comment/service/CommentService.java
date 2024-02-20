@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -46,9 +48,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(id).orElseThrow(() ->
                 new CommentNotFound());
 
-        if (user.getUsername() != (comment.getAuthor().getUsername())) {
-            throw new UserNotSame();
-        }
+        isSameUser(user.getUsername(), comment.getAuthor().getUsername());
 
         commentRepository.delete(comment);
 
@@ -58,6 +58,16 @@ public class CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFound());
 
+        User user = userUtil.currentUser();
+
+        isSameUser(user.getUsername(), comment.getAuthor().getUsername());
+
         comment.updateComment(modify.getComment());
+    }
+
+    private void isSameUser (String userName, String commentUser) {
+        if (!userName.equals(commentUser)) {
+            throw  new UserNotSame();
+        }
     }
 }
