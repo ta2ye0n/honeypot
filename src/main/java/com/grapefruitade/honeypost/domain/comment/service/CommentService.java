@@ -1,6 +1,7 @@
 
 package com.grapefruitade.honeypost.domain.comment.service;
 
+import com.grapefruitade.honeypost.domain.comment.dto.ModifyComment;
 import com.grapefruitade.honeypost.domain.comment.dto.WriteCommentDto;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
 import com.grapefruitade.honeypost.domain.comment.exception.CommentNotFound;
@@ -10,6 +11,8 @@ import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
+import com.grapefruitade.honeypost.global.error.CustomException;
+import com.grapefruitade.honeypost.global.error.ErrorCode;
 import com.grapefruitade.honeypost.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,5 +52,12 @@ public class CommentService {
 
         commentRepository.delete(comment);
 
+    }
+
+    public void modifyComment(Long id, ModifyComment modify) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFound());
+
+        comment.updateComment(modify.getComment());
     }
 }

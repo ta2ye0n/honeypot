@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Table(name = "comment")
-public class Comment{
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +29,7 @@ public class Comment{
     @JoinColumn(name = "post_id")
     private Post post;
 
-
+    public void updateComment(String comment) {
+        this.content = comment;
+    }
 }
