@@ -12,5 +12,6 @@ public class InfoPost {
     private String content;
     private Integer likes;
     private String previewImage;
+    private Integer comments;
 
 }

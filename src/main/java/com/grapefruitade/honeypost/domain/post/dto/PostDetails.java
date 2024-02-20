@@ -1,5 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.dto;
 
+import com.grapefruitade.honeypost.domain.comment.dto.DetailComment;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,4 +15,5 @@ public class PostDetails {
     private String content;
     private Integer likes;
     private List<String> images;
+    private List<DetailComment> comments;
 }
