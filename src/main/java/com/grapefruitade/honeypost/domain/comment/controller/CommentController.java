@@ -32,6 +32,6 @@ public class CommentController {
     @PutMapping("/{comment_id}")
     public ResponseEntity<String> modify (@PathVariable("comment_id") Long commentId, @RequestBody ModifyComment modifyComment) {
         commentService.modifyComment(commentId, modifyComment);
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 수정이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글 수정이 완료되었습니다.");
     }
 }
