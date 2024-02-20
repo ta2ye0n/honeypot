@@ -4,6 +4,8 @@ import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -27,6 +29,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
     public void updateComment(String comment) {

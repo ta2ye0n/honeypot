@@ -41,7 +41,7 @@ public class Post {
     private Book book;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author")
+    @JoinColumn(name = "user_id")
     private User author;
 
     private String previewUrl;
