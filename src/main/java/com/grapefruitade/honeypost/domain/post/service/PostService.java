@@ -1,5 +1,8 @@
 package com.grapefruitade.honeypost.domain.post.service;
 
+import com.grapefruitade.honeypost.domain.comment.dto.DetailComment;
+import com.grapefruitade.honeypost.domain.comment.entity.Comment;
+import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
 import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
@@ -31,6 +34,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final ImageUtil imageUtil;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(rollbackFor = {Exception.class})
     public void writePost(WritePost writePost, List<MultipartFile> images, User user) {
@@ -93,6 +97,7 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(likeRepository.countByPost(post))
+                .comments(commentRepository.countByPost(post))
                 .previewImage(preview)
                 .build();
     }
@@ -102,6 +107,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
         List<Image> images = imageRepository.findByPostId(id);
+        List<Comment> comments = commentRepository.findByPostId(id);
 
         if (post.getPreviewUrl() != null) {
             images.remove(images.size() - 1);
@@ -114,11 +120,19 @@ public class PostService {
                 .author(post.getAuthor().getNickname())
                 .likes(likeRepository.countByPost(post))
                 .images(images.stream().map(image -> imageUrl(image.getSaveName())).toList())
+                .comments(comments.stream().map(this::detailComment).toList())
                 .build();
     }
 
     private String imageUrl(String saveName) {
         return "/images/" + saveName;
+    }
+
+    private DetailComment detailComment (Comment comment) {
+        return DetailComment.builder()
+                .author(comment.getAuthor().getNickname())
+                .comment(comment.getContent())
+                .build();
     }
 
     @Transactional
