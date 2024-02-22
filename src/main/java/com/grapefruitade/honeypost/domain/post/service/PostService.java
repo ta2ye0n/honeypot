@@ -17,6 +17,7 @@ import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
+import com.grapefruitade.honeypost.global.util.CommonUtil;
 import com.grapefruitade.honeypost.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,12 +36,13 @@ public class PostService {
     private final ImageUtil imageUtil;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
+    private final CommonUtil commonUtil;
 
     @Transactional(rollbackFor = {Exception.class})
     public void writePost(WritePost writePost, List<MultipartFile> images, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
-                .content(writePost.getContent())
+                .content(commonUtil.markdown(writePost.getContent()))
                 .author(user)
                 .category(writePost.getCategory())
                 .ott(writePost.getOtt())
