@@ -23,7 +23,7 @@ public class UserService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, rollbackFor = {Exception.class})
     public List<InfoPost> getMyPost(){
 
         User user = userUtil.currentUser();
@@ -41,7 +41,6 @@ public class UserService {
                         .previewImage(post.getPreviewUrl())
                         .build())
                 .collect(Collectors.toList());
-
 
     }
 }
