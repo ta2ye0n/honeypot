@@ -12,7 +12,8 @@ public class CommonUtil {
     public String markdown(String markdown) {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder()
+                .softbreak("<br>").build();
         return renderer.render(document);
     }
 }

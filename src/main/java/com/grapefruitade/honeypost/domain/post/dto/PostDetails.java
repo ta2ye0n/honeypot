@@ -14,6 +14,5 @@ public class PostDetails {
     private String title;
     private String content;
     private Integer likes;
-    private List<String> images;
     private List<DetailComment> comments;
 }

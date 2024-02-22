@@ -26,9 +26,9 @@ public class PostController {
     private final LikeService likeService;
     private final UserUtil userUtil;
 
-    @PostMapping(value = "/write", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> write(@Valid @RequestPart(required = false) List<MultipartFile> images, @RequestPart WritePost write) {
-        postService.writePost(write, images, userUtil.currentUser());
+    @PostMapping(value = "/write")
+    public ResponseEntity<String> write(@RequestBody WritePost write) {
+        postService.writePost(write, userUtil.currentUser());
         return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
     }
 
