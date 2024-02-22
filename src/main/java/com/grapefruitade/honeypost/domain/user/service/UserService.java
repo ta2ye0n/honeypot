@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
 
     private final UserUtil userUtil;
@@ -24,6 +23,7 @@ public class UserService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
 
+    @Transactional(readOnly = true)
     public List<InfoPost> getMyPost(){
 
         User user = userUtil.currentUser();
