@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,17 +30,18 @@ public class UserService {
 
         List<Post> userPost = postRepository.findPostByAuthor(user);
 
-        return userPost.stream()
-                .map(post -> InfoPost.builder()
-                        .postId(post.getId())
-                        .author(post.getAuthor().getUsername())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .likes(likeRepository.countByPost(post))
-                        .comments(commentRepository.countByPost(post))
-                        .previewImage(post.getPreviewUrl())
-                        .build())
-                .collect(Collectors.toList());
+        List<InfoPost> infoPosts = new ArrayList<>();
 
+        for (final Post post : userPost) {
+            infoPosts.add(InfoPost.builder()
+                    .author(post.getAuthor().getUsername())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .likes(likeRepository.countByPost(post))
+                    .comments(commentRepository.countByPost(post))
+                    .previewImage(post.getPreviewUrl())
+                    .build());
+        }
+         return infoPosts;
     }
 }
