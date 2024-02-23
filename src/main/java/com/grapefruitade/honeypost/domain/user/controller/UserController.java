@@ -1,6 +1,7 @@
 package com.grapefruitade.honeypost.domain.user.controller;
 
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
+import com.grapefruitade.honeypost.domain.user.service.UserPostInfoList;
 import com.grapefruitade.honeypost.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<InfoPost>> getMyPost(){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getMyPosts().getInfoPosts());
+    public ResponseEntity<UserPostInfoList> getMyPost(){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getMyPosts());
     }
 }

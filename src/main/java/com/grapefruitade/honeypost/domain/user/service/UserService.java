@@ -7,7 +7,6 @@ import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.global.util.UserUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,14 +43,5 @@ public class UserService {
                 .collect(Collectors.toList());
 
         return new UserPostInfoList(infoPosts);
-    }
-
-    @Getter
-    public static class UserPostInfoList {
-        private final List<InfoPost> infoPosts;
-
-        public UserPostInfoList(List<InfoPost> infoPosts) {
-            this.infoPosts = infoPosts;
-        }
     }
 }
