@@ -20,6 +20,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<InfoPost>> getMyPost(){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getMyPost());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getMyPosts().getInfoPosts());
     }
 }
