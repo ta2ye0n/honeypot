@@ -42,7 +42,7 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
 
-    // markdown
+    // markdown 적용
     implementation 'org.commonmark:commonmark:0.18.2'
 
 }
