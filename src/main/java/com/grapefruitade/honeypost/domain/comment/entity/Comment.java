@@ -24,7 +24,7 @@ public class Comment {
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author")
+    @JoinColumn(name = "user_id")
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)

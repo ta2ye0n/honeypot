@@ -3,8 +3,6 @@ package com.grapefruitade.honeypost.domain.post.service;
 import com.grapefruitade.honeypost.domain.comment.dto.DetailComment;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
 import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
-import com.grapefruitade.honeypost.domain.image.entity.Image;
-import com.grapefruitade.honeypost.domain.image.repository.ImageRepository;
 import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.Category;
@@ -17,13 +15,12 @@ import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
-import com.grapefruitade.honeypost.global.util.UserUtil;
+import com.grapefruitade.honeypost.global.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,25 +28,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final ImageRepository imageRepository;
     private final ImageUtil imageUtil;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
+    private final CommonUtil commonUtil;
 
     @Transactional(rollbackFor = {Exception.class})
-    public void writePost(WritePost writePost, List<MultipartFile> images, User user) {
+    public void writePost(WritePost writePost, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
-                .content(writePost.getContent())
+                .content(commonUtil.markdown(writePost.getContent()))
                 .author(user)
                 .category(writePost.getCategory())
                 .ott(writePost.getOtt())
                 .book(writePost.getBook())
                 .build();
-
-        if (images != null) {
-            imageUtil.saveImages(images, post);
-        }
 
         postRepository.save(post);
     }
@@ -106,12 +99,8 @@ public class PostService {
     public PostDetails info(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
-        List<Image> images = imageRepository.findByPostId(id);
         List<Comment> comments = commentRepository.findByPostId(id);
 
-        if (post.getPreviewUrl() != null) {
-            images.remove(images.size() - 1);
-        }
 
         return PostDetails.builder()
                 .postId(post.getId())
@@ -119,7 +108,6 @@ public class PostService {
                 .content(post.getContent())
                 .author(post.getAuthor().getNickname())
                 .likes(likeRepository.countByPost(post))
-                .images(images.stream().map(image -> imageUrl(image.getSaveName())).toList())
                 .comments(comments.stream().map(this::detailComment).toList())
                 .build();
     }
@@ -128,7 +116,7 @@ public class PostService {
         return "/images/" + saveName;
     }
 
-    private DetailComment detailComment (Comment comment) {
+    private DetailComment detailComment(Comment comment) {
         return DetailComment.builder()
                 .author(comment.getAuthor().getNickname())
                 .comment(comment.getContent())

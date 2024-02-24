@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "likes")
 public class LikeEntity {
 
     @Id
