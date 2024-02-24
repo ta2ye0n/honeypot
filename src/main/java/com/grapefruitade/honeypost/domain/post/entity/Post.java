@@ -25,7 +25,8 @@ public class Post {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Lob
+    @Column(name = "content")
     private String content;
 
     @Enumerated(EnumType.STRING)
