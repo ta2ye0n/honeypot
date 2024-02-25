@@ -37,7 +37,7 @@ public class PostService {
     public void writePost(WritePost writePost, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
-                .content(commonUtil.markdown(writePost.getContent()))
+                .content(writePost.getContent())
                 .author(user)
                 .category(writePost.getCategory())
                 .ott(writePost.getOtt())
@@ -105,7 +105,7 @@ public class PostService {
         return PostDetails.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .content(post.getContent())
+                .content(commonUtil.markdown(post.getContent()))
                 .author(post.getAuthor().getNickname())
                 .likes(likeRepository.countByPost(post))
                 .comments(comments.stream().map(this::detailComment).toList())
