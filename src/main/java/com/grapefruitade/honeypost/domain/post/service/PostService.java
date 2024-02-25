@@ -2,6 +2,7 @@ package com.grapefruitade.honeypost.domain.post.service;
 
 import com.grapefruitade.honeypost.domain.comment.dto.DetailComment;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
+import com.grapefruitade.honeypost.domain.comment.exception.UserNotSame;
 import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
@@ -58,18 +59,26 @@ public class PostService {
 
 
     @Transactional(rollbackFor = {Exception.class})
-    public void modifyPost(Long id, ModifyPost modify) {
+    public void modifyPost(Long id, ModifyPost modify, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+        isSameUser(user.getUsername(), post.getAuthor().getUsername());
 
         post.modifyPost(modify.getTitle(), modify.getContent());
         postRepository.save(post);
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    public void deletePost(Long id) {
+    public void deletePost(Long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+        isSameUser(user.getUsername(), post.getAuthor().getUsername());
 
         postRepository.delete(post);
+    }
+
+    private void isSameUser (String userName, String commentUser) {
+        if (!userName.equals(commentUser)) {
+            throw  new CustomException(ErrorCode.USER_NOT_SAME);
+        }
     }
 
     @Transactional

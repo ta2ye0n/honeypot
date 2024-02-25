@@ -42,13 +42,13 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> modify(@PathVariable Long id, @RequestBody ModifyPost modify) {
-        postService.modifyPost(id, modify);
+        postService.modifyPost(id, modify, userUtil.currentUser());
         return ResponseEntity.status(HttpStatus.OK).body("글 수정이 완료되었습니다.");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        postService.deletePost(id);
+        postService.deletePost(id, userUtil.currentUser());
         return ResponseEntity.status(HttpStatus.OK).body("글 삭제가 완료되었습니다.");
     }
 
