@@ -27,9 +27,8 @@ public class PostController {
     private final UserUtil userUtil;
 
     @PostMapping(value = "/write")
-    public ResponseEntity<String> write(@RequestBody WritePost write) {
-        postService.writePost(write, userUtil.currentUser());
-        return ResponseEntity.status(HttpStatus.OK).body("글 작성이 완료되었습니다.");
+    public ResponseEntity<Long> write(@RequestBody WritePost write) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.writePost(write, userUtil.currentUser()));
     }
 
     @PostMapping(value = "/preview", consumes = {"multipart/form-data"})

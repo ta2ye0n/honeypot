@@ -35,7 +35,7 @@ public class PostService {
     private final CommonUtil commonUtil;
 
     @Transactional(rollbackFor = {Exception.class})
-    public void writePost(WritePost writePost, User user) {
+    public Long writePost(WritePost writePost, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
                 .content(writePost.getContent())
@@ -46,6 +46,8 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        return post.getId();
     }
 
     @Transactional(rollbackFor = {Exception.class})
