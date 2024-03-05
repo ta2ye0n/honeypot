@@ -31,8 +31,8 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.writePost(write, userUtil.currentUser()));
     }
 
-    @PostMapping(value = "/preview", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @RequestPart Long id) {
+    @PostMapping(value = "/preview/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @PathVariable Long id) {
         if (previewImage != null) {
             postService.uploadPreviewImage(previewImage, id);
         }
