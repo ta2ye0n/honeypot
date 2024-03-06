@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_EXTENSION(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "잘못된 이미지 확장자 입니다."),
     INVALID_POST(HttpStatus.BAD_REQUEST, "유효 하지 않은 게시글 입니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_NOT_FOUND"),
+    IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "이미지 업로드를 실패했습니다."),
 
     // TOKEN
     TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED,"TOKEN_NOT_VALID"),
