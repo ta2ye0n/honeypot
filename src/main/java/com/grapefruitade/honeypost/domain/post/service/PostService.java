@@ -2,9 +2,8 @@ package com.grapefruitade.honeypost.domain.post.service;
 
 import com.grapefruitade.honeypost.domain.comment.dto.DetailComment;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
-import com.grapefruitade.honeypost.domain.comment.exception.UserNotSame;
 import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
-import com.grapefruitade.honeypost.domain.image.util.ImageUtil;
+import com.grapefruitade.honeypost.domain.image.service.ImageS3Service;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.Category;
 import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final ImageUtil imageUtil;
+    private final ImageS3Service imageS3Service;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final CommonUtil commonUtil;
@@ -55,7 +54,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
 
-        imageUtil.saveImage(image, post);
+        imageS3Service.uploadImage(image, post);
 
     }
 
@@ -93,7 +92,7 @@ public class PostService {
     }
 
     private InfoPost infoPost(Post post) {
-        String preview = post.getPreviewUrl() != null ? imageUrl(post.getPreviewUrl()) : null;
+        String preview = post.getPreviewUrl() != null ? post.getPreviewUrl() : null;
 
         return InfoPost.builder()
                 .postId(post.getId())
