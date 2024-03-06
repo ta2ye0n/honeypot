@@ -37,3 +37,12 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
 
+cloud:
+  aws:
+    s3:
+      bucketName: ${bucketName}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${AccessKey}
+      secretKey: ${SecretKey}
