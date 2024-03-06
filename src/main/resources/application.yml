@@ -18,7 +18,6 @@ spring:
       max-file-size: 20MB
       max-request-size: 10MB
 
-
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.MariaDBDialect
@@ -44,5 +43,5 @@ cloud:
     stack.auto: false
     region.static: ap-northeast-2
     credentials:
-      access-Key: ${accessKey}
-      secret-Key: ${secretKey}
+      access-key: ${accessKey}
+      secret-key: ${secretKey}
