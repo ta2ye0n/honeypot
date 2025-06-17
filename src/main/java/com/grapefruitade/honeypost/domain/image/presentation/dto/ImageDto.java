@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.image.dto;
+package com.grapefruitade.honeypost.domain.image.presentation.dto;
 
 import com.grapefruitade.honeypost.domain.image.entity.Image;
 import com.grapefruitade.honeypost.domain.post.entity.Post;

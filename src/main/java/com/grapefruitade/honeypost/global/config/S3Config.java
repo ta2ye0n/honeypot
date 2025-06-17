@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.global.security.config;
+package com.grapefruitade.honeypost.global.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

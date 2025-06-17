@@ -1,11 +1,11 @@
-package com.grapefruitade.honeypost.domain.post.controller;
+package com.grapefruitade.honeypost.domain.post.presentation;
 
 import com.grapefruitade.honeypost.domain.like.service.LikeService;
-import com.grapefruitade.honeypost.domain.post.dto.req.EditPostReq;
-import com.grapefruitade.honeypost.domain.post.dto.req.CreatePostReq;
-import com.grapefruitade.honeypost.domain.post.dto.res.InfoPostRes;
-import com.grapefruitade.honeypost.domain.post.dto.res.PostDetailsRes;
-import com.grapefruitade.honeypost.domain.post.enums.Category;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.req.EditPostReq;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.req.CreatePostReq;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.res.InfoPostRes;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.res.PostDetailsRes;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
 import com.grapefruitade.honeypost.domain.post.service.PostService;
 import com.grapefruitade.honeypost.global.util.UserUtil;
 import jakarta.validation.Valid;
@@ -32,23 +32,23 @@ public class PostController {
     }
 
     @PostMapping(value = "/preview/{id}", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @PathVariable Long id) {
+    public ResponseEntity<Void> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @PathVariable Long id) {
         if (previewImage != null) {
             postService.uploadPreviewImage(previewImage, id);
         }
-        return ResponseEntity.status(HttpStatus.OK).body("썸네일이 추가 되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> modify(@PathVariable Long id, @RequestBody EditPostReq modify) {
+    public ResponseEntity<Void> modify(@PathVariable Long id, @RequestBody EditPostReq modify) {
         postService.modifyPost(id, modify, userUtil.currentUser());
-        return ResponseEntity.status(HttpStatus.OK).body("글 수정이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         postService.deletePost(id, userUtil.currentUser());
-        return ResponseEntity.status(HttpStatus.OK).body("글 삭제가 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/list")
@@ -72,7 +72,8 @@ public class PostController {
     }
 
     @PostMapping("/like/{id}")
-    public ResponseEntity<String> like(@Valid @PathVariable Long id) {
-        return ResponseEntity.ok(likeService.toggleLike(id, userUtil.currentUser()));
+    public ResponseEntity<Void> like(@Valid @PathVariable Long id) {
+        likeService.toggleLike(id, userUtil.currentUser());
+        return ResponseEntity.ok().build();
     }
 }

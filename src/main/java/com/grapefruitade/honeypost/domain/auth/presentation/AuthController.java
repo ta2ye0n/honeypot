@@ -1,8 +1,8 @@
-package com.grapefruitade.honeypost.domain.auth.controller;
+package com.grapefruitade.honeypost.domain.auth.presentation;
 
-import com.grapefruitade.honeypost.domain.auth.dto.req.LoginReq;
-import com.grapefruitade.honeypost.domain.auth.dto.req.RegisterReq;
-import com.grapefruitade.honeypost.domain.auth.dto.res.TokenRes;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.req.LoginReq;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.req.RegisterReq;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.res.TokenRes;
 import com.grapefruitade.honeypost.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

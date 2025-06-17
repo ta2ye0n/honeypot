@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.post.enums;
+package com.grapefruitade.honeypost.domain.post.entity.enums;
 
 public enum OTT {
     WAVVE, // 웨이브

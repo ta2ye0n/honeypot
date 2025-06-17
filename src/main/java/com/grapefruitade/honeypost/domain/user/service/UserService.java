@@ -2,9 +2,10 @@ package com.grapefruitade.honeypost.domain.user.service;
 
 import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
-import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.res.InfoPostRes;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
+import com.grapefruitade.honeypost.domain.user.presentation.dto.res.UserPostInfoListRes;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.global.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +25,13 @@ public class UserService {
     private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true, rollbackFor = {Exception.class})
-    public UserPostInfoList getMyPosts() {
-
+    public UserPostInfoListRes getMyPosts() {
         User user = userUtil.currentUser();
 
         List<Post> userPost = postRepository.findPostByAuthor(user);
 
-        List<InfoPost> infoPosts = userPost.stream()
-                .map(post -> InfoPost.builder()
+        List<InfoPostRes> infoPosts = userPost.stream()
+                .map(post -> InfoPostRes.builder()
                         .postId(post.getId())
                         .author(post.getAuthor().getUsername())
                         .title(post.getTitle())
@@ -42,6 +42,6 @@ public class UserService {
                         .build())
                 .collect(Collectors.toList());
 
-        return new UserPostInfoList(infoPosts);
+        return new UserPostInfoListRes(infoPosts);
     }
 }

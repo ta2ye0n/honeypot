@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.user.dto.res;
+package com.grapefruitade.honeypost.domain.user.presentation.dto.res;
 
 
 import com.grapefruitade.honeypost.domain.post.presentation.dto.res.InfoPostRes;

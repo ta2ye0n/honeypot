@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.comment.dto.req;
+package com.grapefruitade.honeypost.domain.comment.presentation.dto.req;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.user.entity.User;

@@ -1,20 +1,20 @@
 package com.grapefruitade.honeypost.domain.post.service;
 
-import com.grapefruitade.honeypost.domain.comment.dto.DetailComment;
+import com.grapefruitade.honeypost.domain.comment.presentation.dto.res.DetailCommentRes;
 import com.grapefruitade.honeypost.domain.comment.entity.Comment;
 import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.image.service.ImageS3Service;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
-import com.grapefruitade.honeypost.domain.post.Category;
-import com.grapefruitade.honeypost.domain.post.dto.InfoPost;
-import com.grapefruitade.honeypost.domain.post.dto.ModifyPost;
-import com.grapefruitade.honeypost.domain.post.dto.PostDetails;
-import com.grapefruitade.honeypost.domain.post.dto.WritePost;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
+import com.grapefruitade.honeypost.domain.post.exception.NotFoundPostException;
+import com.grapefruitade.honeypost.domain.post.exception.UserNotSameException;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.res.InfoPostRes;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.req.EditPostReq;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.res.PostDetailsRes;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.req.CreatePostReq;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
-import com.grapefruitade.honeypost.global.error.CustomException;
-import com.grapefruitade.honeypost.global.error.ErrorCode;
 import com.grapefruitade.honeypost.global.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class PostService {
     private final CommonUtil commonUtil;
 
     @Transactional(rollbackFor = {Exception.class})
-    public Long writePost(WritePost writePost, User user) {
+    public Long writePost(CreatePostReq writePost, User user) {
         Post post = Post.builder()
                 .title(writePost.getTitle())
                 .content(writePost.getContent())
@@ -52,7 +52,7 @@ public class PostService {
     @Transactional(rollbackFor = {Exception.class})
     public void uploadPreviewImage(MultipartFile image, Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+                .orElseThrow(NotFoundPostException::new);
 
         imageS3Service.uploadImage(image, post);
 
@@ -60,8 +60,9 @@ public class PostService {
 
 
     @Transactional(rollbackFor = {Exception.class})
-    public void modifyPost(Long id, ModifyPost modify, User user) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+    public void modifyPost(Long id, EditPostReq modify, User user) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(NotFoundPostException::new);
         isSameUser(user.getUsername(), post.getAuthor().getUsername());
 
         post.modifyPost(modify.getTitle(), modify.getContent());
@@ -70,7 +71,8 @@ public class PostService {
 
     @Transactional(rollbackFor = {Exception.class})
     public void deletePost(Long id, User user) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+        Post post = postRepository.findById(id)
+                .orElseThrow(NotFoundPostException::new);
         isSameUser(user.getUsername(), post.getAuthor().getUsername());
 
         postRepository.delete(post);
@@ -78,12 +80,12 @@ public class PostService {
 
     private void isSameUser (String userName, String commentUser) {
         if (!userName.equals(commentUser)) {
-            throw  new CustomException(ErrorCode.USER_NOT_SAME);
+            throw new UserNotSameException();
         }
     }
 
     @Transactional
-    public List<InfoPost> postList(Category category) {
+    public List<InfoPostRes> postList(Category category) {
         List<Post> list = postRepository.findByCategory(category);
 
         return list.stream()
@@ -91,10 +93,10 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    private InfoPost infoPost(Post post) {
+    private InfoPostRes infoPost(Post post) {
         String preview = post.getPreviewUrl() != null ? post.getPreviewUrl() : null;
 
-        return InfoPost.builder()
+        return InfoPostRes.builder()
                 .postId(post.getId())
                 .author(post.getAuthor().getNickname())
                 .title(post.getTitle())
@@ -106,13 +108,12 @@ public class PostService {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    public PostDetails info(Long id) {
+    public PostDetailsRes info(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+                .orElseThrow(NotFoundPostException::new);
         List<Comment> comments = commentRepository.findByPostId(id);
 
-
-        return PostDetails.builder()
+        return PostDetailsRes.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(commonUtil.markdown(post.getContent()))
@@ -126,16 +127,17 @@ public class PostService {
         return "/images/" + saveName;
     }
 
-    private DetailComment detailComment(Comment comment) {
-        return DetailComment.builder()
+    private DetailCommentRes detailComment(Comment comment) {
+        return DetailCommentRes.builder()
                 .author(comment.getAuthor().getNickname())
                 .comment(comment.getContent())
                 .build();
     }
 
     @Transactional
-    public List<InfoPost> searchPost(String keyword) {
-        List<Post> result = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
+    public List<InfoPostRes> searchPost(String keyword) {
+        List<Post> result = postRepository
+                .findByTitleContainingOrContentContaining(keyword, keyword);
 
         return result.stream()
                 .map(this::infoPost)
@@ -143,7 +145,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<InfoPost> hotTopic() {
+    public List<InfoPostRes> hotTopic() {
         List<Post> result = likeRepository.findByLikesSizeGreaterThan50();
 
         return result.stream()

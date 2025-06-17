@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.global.security.config;
+package com.grapefruitade.honeypost.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

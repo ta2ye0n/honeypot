@@ -1,11 +1,13 @@
-package com.grapefruitade.honeypost.domain.comment.exception;
+package com.grapefruitade.honeypost.domain.post.exception;
 
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
+import lombok.Getter;
 
-public class UserNotSame extends CustomException {
+@Getter
+public class UserNotSameException extends CustomException {
 
-    public UserNotSame(){
+    public UserNotSameException(){
         super(ErrorCode.USER_NOT_SAME);
     }
 }

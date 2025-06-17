@@ -1,12 +1,12 @@
 package com.grapefruitade.honeypost.domain.auth.service;
 
-import com.grapefruitade.honeypost.domain.auth.dto.LoginRequestDto;
-import com.grapefruitade.honeypost.domain.auth.dto.RegisterRequestDto;
-import com.grapefruitade.honeypost.domain.auth.dto.TokenDto;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.req.LoginReq;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.req.RegisterReq;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.res.TokenRes;
 import com.grapefruitade.honeypost.domain.auth.entity.RefreshToken;
 import com.grapefruitade.honeypost.domain.auth.exception.*;
 import com.grapefruitade.honeypost.domain.auth.repository.RefreshTokenRepository;
-import com.grapefruitade.honeypost.domain.user.dto.UserResponseDto;
+import com.grapefruitade.honeypost.domain.user.presentation.dto.res.UserInfoRes;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.domain.user.repository.UserRepository;
 import com.grapefruitade.honeypost.global.security.exception.TokenExpirationException;
@@ -28,32 +28,32 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public UserResponseDto register(RegisterRequestDto registerRequest){
+    public UserInfoRes register(RegisterReq registerRequest){
         if(userRepository.existsByUsername(registerRequest.getUsername())){
             throw new ExistUsernameException();
         }
 
         User user = registerRequest.user(passwordEncoder);
-        return UserResponseDto.userResponseDto(userRepository.save(user));
+        return UserInfoRes.userResponseDto(userRepository.save(user));
     }
 
-    public TokenDto login(LoginRequestDto loginRequest){
+    public TokenRes login(LoginReq loginRequest){
 
       User user = userRepository.findByUsername(loginRequest.getUsername())
-              .orElseThrow(() -> new UserNotFoundException());
+              .orElseThrow(UserNotFoundException::new);
 
       if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
           throw new MismatchNotPassword();
       }
 
-      TokenDto tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
+      TokenRes tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
 
       saveRefreshToken(tokenDto, user);
 
         return tokenDto;
     }
 
-    private void saveRefreshToken(TokenDto tokenDto, User user) {
+    private void saveRefreshToken(TokenRes tokenDto, User user) {
         RefreshToken token = RefreshToken.builder()
                 .token(tokenDto.getRefreshToken())
                 .userid(user.getId())
@@ -63,18 +63,18 @@ public class AuthService {
         refreshTokenRepository.save(token);
     }
 
-    public TokenDto refresh (String refreshToken){
+    public TokenRes refresh (String refreshToken){
         String parseRefreshToken = tokenProvider.parseRefreshToken(refreshToken);
 
 
         RefreshToken validRefreshToken = refreshTokenRepository.findById(parseRefreshToken)
-                .orElseThrow(() -> new TokenExpirationException());
+                .orElseThrow(TokenExpirationException::new);
 
         User user = userRepository.findById(validRefreshToken.getUserid())
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
 
-        TokenDto tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
+        TokenRes tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
 
         saveRefreshToken(tokenDto, user);
         refreshTokenRepository.deleteById(validRefreshToken.getToken());
@@ -90,7 +90,7 @@ public class AuthService {
             throw new TokenNotValidException();}
 
         RefreshToken validRefreshToken = refreshTokenRepository.findById(parseRefreshToken)
-                .orElseThrow(() -> new TokenNotFoundException());
+                .orElseThrow(TokenNotFoundException::new);
 
         refreshTokenRepository.deleteById(validRefreshToken.getToken());
 

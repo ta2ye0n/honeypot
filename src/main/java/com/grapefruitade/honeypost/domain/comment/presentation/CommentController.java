@@ -1,8 +1,8 @@
-package com.grapefruitade.honeypost.domain.comment.controller;
+package com.grapefruitade.honeypost.domain.comment.presentation;
 
 
-import com.grapefruitade.honeypost.domain.comment.dto.req.EditCommentReq;
-import com.grapefruitade.honeypost.domain.comment.dto.req.CreateCommentReq;
+import com.grapefruitade.honeypost.domain.comment.presentation.dto.req.EditCommentReq;
+import com.grapefruitade.honeypost.domain.comment.presentation.dto.req.CreateCommentReq;
 import com.grapefruitade.honeypost.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

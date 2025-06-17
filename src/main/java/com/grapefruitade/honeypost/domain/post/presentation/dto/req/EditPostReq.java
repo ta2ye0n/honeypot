@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.post.dto.req;
+package com.grapefruitade.honeypost.domain.post.presentation.dto.req;
 
 import lombok.Getter;
 

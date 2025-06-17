@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.auth.dto.res;
+package com.grapefruitade.honeypost.domain.auth.presentation.dto.res;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
-package com.grapefruitade.honeypost.domain.user.controller;
+package com.grapefruitade.honeypost.domain.user.presentation;
 
-import com.grapefruitade.honeypost.domain.user.dto.res.UserPostInfoListRes;
+import com.grapefruitade.honeypost.domain.user.presentation.dto.res.UserPostInfoListRes;
 import com.grapefruitade.honeypost.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

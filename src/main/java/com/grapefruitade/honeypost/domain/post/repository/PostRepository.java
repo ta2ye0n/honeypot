@@ -1,6 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.repository;
 
-import com.grapefruitade.honeypost.domain.post.Category;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

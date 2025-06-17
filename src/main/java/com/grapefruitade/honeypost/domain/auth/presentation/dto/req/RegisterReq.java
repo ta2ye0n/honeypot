@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.auth.dto.req;
+package com.grapefruitade.honeypost.domain.auth.presentation.dto.req;
 
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import com.grapefruitade.honeypost.domain.user.entity.enums.Role;

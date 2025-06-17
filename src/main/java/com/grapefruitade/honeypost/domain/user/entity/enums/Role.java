@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.user.enums;
+package com.grapefruitade.honeypost.domain.user.entity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

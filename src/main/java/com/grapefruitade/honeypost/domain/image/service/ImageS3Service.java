@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.grapefruitade.honeypost.domain.image.entity.Image;
+import com.grapefruitade.honeypost.domain.image.exception.ImageUploadFailedException;
+import com.grapefruitade.honeypost.domain.image.exception.InvalidExtensionException;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.global.error.CustomException;
 import com.grapefruitade.honeypost.global.error.ErrorCode;
@@ -49,7 +51,7 @@ public class ImageS3Service {
         List<String> imageExtensions = List.of(".png", ".jpg", ".jpeg");
 
         if (originalName.toLowerCase().endsWith(imageExtensions.toString())) {
-            throw new CustomException(ErrorCode.INVALID_EXTENSION);
+            throw new InvalidExtensionException();
         }
     }
 
@@ -68,7 +70,7 @@ public class ImageS3Service {
                     bucketName, changedName, image.getInputStream(), metadata
             ).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
+            throw new ImageUploadFailedException();
         }
 
         return amazonS3.getUrl(bucketName, changedName).toString();

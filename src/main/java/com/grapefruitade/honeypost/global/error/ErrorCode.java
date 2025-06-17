@@ -11,7 +11,6 @@ public enum ErrorCode {
     // POST
     MAXIMUM_IMAGES_EXCEEDED(HttpStatus.BAD_REQUEST, "이미지는 최대 7장까지 가능합니다."),
     INVALID_EXTENSION(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "잘못된 이미지 확장자 입니다."),
-    INVALID_POST(HttpStatus.BAD_REQUEST, "유효 하지 않은 게시글 입니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_NOT_FOUND"),
     IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "이미지 업로드를 실패했습니다."),
 

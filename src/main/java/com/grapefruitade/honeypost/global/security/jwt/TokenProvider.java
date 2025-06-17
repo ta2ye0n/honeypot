@@ -1,9 +1,9 @@
 package com.grapefruitade.honeypost.global.security.jwt;
 
-import com.grapefruitade.honeypost.domain.auth.dto.TokenDto;
+import com.grapefruitade.honeypost.domain.auth.presentation.dto.res.TokenRes;
 import com.grapefruitade.honeypost.global.security.exception.TokenExpirationException;
 import com.grapefruitade.honeypost.global.security.exception.TokenNotValidException;
-import com.grapefruitade.honeypost.domain.user.enums.Role;
+import com.grapefruitade.honeypost.domain.user.entity.enums.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -37,8 +37,8 @@ public class TokenProvider {
         this.userDetailsService = userDetailsService;
     }
 
-    public TokenDto generateTokenDto(Long userid, Role role){
-        return TokenDto.builder()
+    public TokenRes generateTokenDto(Long userid, Role role){
+        return TokenRes.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(generateAccessToken(userid, role))
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME)

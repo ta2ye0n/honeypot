@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.comment.dto.res;
+package com.grapefruitade.honeypost.domain.comment.presentation.dto.res;
 
 import lombok.Builder;
 import lombok.Getter;

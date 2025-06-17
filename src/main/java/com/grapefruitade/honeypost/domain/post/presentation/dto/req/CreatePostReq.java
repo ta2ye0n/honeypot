@@ -1,8 +1,8 @@
-package com.grapefruitade.honeypost.domain.post.dto.req;
+package com.grapefruitade.honeypost.domain.post.presentation.dto.req;
 
-import com.grapefruitade.honeypost.domain.post.enums.Book;
-import com.grapefruitade.honeypost.domain.post.enums.Category;
-import com.grapefruitade.honeypost.domain.post.enums.OTT;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Book;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
+import com.grapefruitade.honeypost.domain.post.entity.enums.OTT;
 import lombok.Getter;
 
 @Getter

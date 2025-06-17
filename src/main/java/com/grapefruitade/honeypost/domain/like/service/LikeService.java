@@ -1,6 +1,5 @@
 package com.grapefruitade.honeypost.domain.like.service;
 
-import com.grapefruitade.honeypost.domain.like.dto.PostId;
 import com.grapefruitade.honeypost.domain.like.entity.LikeEntity;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
@@ -22,13 +21,15 @@ public class LikeService {
     @Transactional
     public String toggleLike(Long id, User user) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_POST));
+                .orElseThrow(IllegalArgumentException::new);
 
         if (likeRepository.existsByUserAndPost(user, post)) {
             unlikePost(user, post);
+            post.unlike();
             return "좋아요가 취소되었습니다.";
         } else {
             likePost(user, post);
+            post.like();
             return "좋아요를 눌렀습니다.";
         }
     }

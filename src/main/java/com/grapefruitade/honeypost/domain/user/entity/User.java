@@ -1,6 +1,6 @@
 package com.grapefruitade.honeypost.domain.user.entity;
 
-import com.grapefruitade.honeypost.domain.user.enums.Role;
+import com.grapefruitade.honeypost.domain.user.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

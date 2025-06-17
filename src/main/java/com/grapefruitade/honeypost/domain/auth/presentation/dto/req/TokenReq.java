@@ -1,4 +1,4 @@
-package com.grapefruitade.honeypost.domain.auth.dto.req;
+package com.grapefruitade.honeypost.domain.auth.presentation.dto.req;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

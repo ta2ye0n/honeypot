@@ -1,14 +1,11 @@
 package com.grapefruitade.honeypost.domain.post.entity;
 
-import com.grapefruitade.honeypost.domain.like.entity.LikeEntity;
-import com.grapefruitade.honeypost.domain.post.Book;
-import com.grapefruitade.honeypost.domain.post.Category;
-import com.grapefruitade.honeypost.domain.post.OTT;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Book;
+import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
+import com.grapefruitade.honeypost.domain.post.entity.enums.OTT;
 import com.grapefruitade.honeypost.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -47,6 +44,8 @@ public class Post {
 
     private String previewUrl;
 
+    private Integer likes;
+
     public void modifyPost(String title, String content) {
         this.title = title;
         this.content = content;
@@ -54,5 +53,13 @@ public class Post {
 
     public void uploadPreviewUrl(String previewUrl) {
         this.previewUrl = previewUrl;
+    }
+
+    public void like() {
+        likes++;
+    }
+
+    public void unlike() {
+        likes--;
     }
 }
