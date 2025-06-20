@@ -66,9 +66,9 @@ public class ImageS3Service {
         metadata.setContentType("image/"+ext);
 
         try {
-            PutObjectResult putObjectResult = amazonS3.putObject(new PutObjectRequest(
+            amazonS3.putObject(new PutObjectRequest(
                     bucketName, changedName, image.getInputStream(), metadata
-            ).withCannedAcl(CannedAccessControlList.PublicRead));
+            ));
         } catch (IOException e) {
             throw new ImageUploadFailedException();
         }
