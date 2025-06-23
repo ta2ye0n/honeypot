@@ -53,7 +53,7 @@ public class AuthService {
 
       saveRefreshToken(tokenDto, user);
 
-        return tokenDto;
+      return tokenDto;
     }
 
     private void saveRefreshToken(TokenRes tokenDto, User user) {
@@ -69,13 +69,11 @@ public class AuthService {
     public TokenRes refresh (String refreshToken){
         String parseRefreshToken = tokenProvider.parseRefreshToken(refreshToken);
 
-
         RefreshToken validRefreshToken = refreshTokenRepository.findById(parseRefreshToken)
                 .orElseThrow(TokenExpirationException::new);
 
         User user = userRepository.findById(validRefreshToken.getUserId())
                 .orElseThrow(UserNotFoundException::new);
-
 
         TokenRes tokenDto = tokenProvider.generateTokenDto(user.getId(), user.getRole());
 
@@ -86,15 +84,16 @@ public class AuthService {
     }
 
 
-    public void logout(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization").substring(7);
-
+    public void logout() {
         User user = userUtil.currentUser();
 
-        RefreshToken validToken = refreshTokenRepository.findByUserId(user.getId())
-                .orElseThrow(ExpiredRefreshTokenException::new);
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId());
 
-        refreshTokenRepository.delete(validToken);
+        if (refreshToken == null) {
+            throw new TokenNotFoundException();
+        }
+
+        refreshTokenRepository.delete(refreshToken);
 
     }
 

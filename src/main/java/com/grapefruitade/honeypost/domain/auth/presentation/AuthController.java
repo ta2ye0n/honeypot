@@ -35,8 +35,8 @@ public class AuthController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> logout(HttpServletRequest request){
-        authService.logout(request);
+    public ResponseEntity<Void> logout(){
+        authService.logout();
         return ResponseEntity.noContent().build();
     }
 
