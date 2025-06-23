@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class DetailCommentRes {
+public class CommentRes {
+    private Long id;
     private String author;
     private String comment;
 }

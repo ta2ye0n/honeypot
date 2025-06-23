@@ -3,43 +3,36 @@ package com.grapefruitade.honeypost.domain.like.service;
 import com.grapefruitade.honeypost.domain.like.entity.LikeEntity;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
+import com.grapefruitade.honeypost.domain.post.exception.NotFoundPostException;
 import com.grapefruitade.honeypost.domain.post.repository.PostRepository;
 import com.grapefruitade.honeypost.domain.user.entity.User;
-import com.grapefruitade.honeypost.global.error.CustomException;
-import com.grapefruitade.honeypost.global.error.ErrorCode;
+import com.grapefruitade.honeypost.global.annotation.ServiceWithTransaction;
+import com.grapefruitade.honeypost.global.util.UserUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@ServiceWithTransaction
 @AllArgsConstructor
 public class LikeService {
 
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
+    private final UserUtil userUtil;
 
     @Transactional
-    public String toggleLike(Long id, User user) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+    public void execute(Long postId) {
+        User user = userUtil.currentUser();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
 
-        if (likeRepository.existsByUserAndPost(user, post)) {
-            unlikePost(user, post);
+        boolean liked = likeRepository.existsByUserAndPost(user, post);
+        if (liked) {
+            likeRepository.deleteByUserAndPost(user, post);
             post.unlike();
-            return "좋아요가 취소되었습니다.";
         } else {
-            likePost(user, post);
+            likeRepository.save(new LikeEntity(user, post));
             post.like();
-            return "좋아요를 눌렀습니다.";
         }
-    }
-
-    private void likePost(User user, Post post) {
-        LikeEntity like = new LikeEntity(user, post);
-        likeRepository.save(like);
-    }
-
-    private void unlikePost(User user, Post post) {
-        likeRepository.deleteByUserAndPost(user, post);
     }
 }

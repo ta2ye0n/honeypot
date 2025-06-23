@@ -55,6 +55,14 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/auth").permitAll()
 
+                                .requestMatchers(HttpMethod.POST, "/post/write").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/post/preview/{id}").authenticated()
+                                .requestMatchers(HttpMethod.GET,"/post").authenticated()
+                                .requestMatchers(HttpMethod.GET,"/post/{id}").authenticated()
+                                .requestMatchers(HttpMethod.GET,"/post/topic").authenticated()
+                                .requestMatchers(HttpMethod.PATCH, "/post/{id}").authenticated()
+
+
                                 .anyRequest().authenticated()
                 )
 

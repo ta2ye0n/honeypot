@@ -27,7 +27,9 @@ public enum ErrorCode {
 
 
     // COMMENT
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND"),
+
+    NOT_ALLOWED_FILE(HttpStatus.BAD_REQUEST,"허용되지 않은 파일 형식입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

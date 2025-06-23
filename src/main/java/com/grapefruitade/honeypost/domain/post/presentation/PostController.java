@@ -3,10 +3,10 @@ package com.grapefruitade.honeypost.domain.post.presentation;
 import com.grapefruitade.honeypost.domain.like.service.LikeService;
 import com.grapefruitade.honeypost.domain.post.presentation.dto.req.EditPostReq;
 import com.grapefruitade.honeypost.domain.post.presentation.dto.req.CreatePostReq;
-import com.grapefruitade.honeypost.domain.post.presentation.dto.res.InfoPostRes;
+import com.grapefruitade.honeypost.domain.post.presentation.dto.res.PostListRes;
 import com.grapefruitade.honeypost.domain.post.presentation.dto.res.PostDetailsRes;
 import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
-import com.grapefruitade.honeypost.domain.post.service.PostService;
+import com.grapefruitade.honeypost.domain.post.service.*;
 import com.grapefruitade.honeypost.global.util.UserUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,65 +15,74 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
 
-    private final PostService postService;
     private final LikeService likeService;
-    private final UserUtil userUtil;
+    private final CreatePostService createPostService;
+    private final DeletePostService deletePostService;
+    private final EditPostService editPostService;
+    private final GetHopTopicPostService getHopTopicPostService;
+    private final GetPostDetailService getPostDetailService;
+    private final GetPostListService getPostListService;
+    private final SearchPostService searchPostService;
+    private final UploadPostPreviewImageService uploadPostPreviewImageService;
 
     @PostMapping(value = "/write")
     public ResponseEntity<Long> write(@RequestBody CreatePostReq write) {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.writePost(write, userUtil.currentUser()));
+        Long id = createPostService.execute(write);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     @PostMapping(value = "/preview/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<Void> previewImage(@Valid @RequestPart(required = false) MultipartFile previewImage, @PathVariable Long id) {
         if (previewImage != null) {
-            postService.uploadPreviewImage(previewImage, id);
+            uploadPostPreviewImageService.execute(id, previewImage);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> modify(@PathVariable Long id, @RequestBody EditPostReq modify) {
-        postService.modifyPost(id, modify, userUtil.currentUser());
-        return ResponseEntity.status(HttpStatus.OK).build();
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> edit(@PathVariable Long id, @RequestBody EditPostReq modify) {
+        editPostService.execute(id, modify);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        postService.deletePost(id, userUtil.currentUser());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        deletePostService.execute(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<InfoPostRes>> listPost(@RequestParam Category category) {
-        return ResponseEntity.ok(postService.postList(category));
+    public ResponseEntity<PostListRes> listPost(@RequestParam Category category) {
+        PostListRes res = getPostListService.execute(category);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDetailsRes> infoPost(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.info(id));
+        PostDetailsRes res = getPostDetailService.execute(id);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<InfoPostRes>> searchPost(@RequestParam String keyword) {
-        return ResponseEntity.ok(postService.searchPost(keyword));
+    public ResponseEntity<PostListRes> searchPost(@RequestParam String keyword) {
+        PostListRes res = searchPostService.execute(keyword);
+        return ResponseEntity.ok(res);
     }
 
-    @GetMapping("/hot topic")
-    public ResponseEntity<List<InfoPostRes>> hotTopic() {
-        return ResponseEntity.ok(postService.hotTopic());
+    @GetMapping("/topic")
+    public ResponseEntity<PostListRes> hotTopic() {
+        PostListRes res = getHopTopicPostService.execute();
+        return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/like/{id}")
+    @PatchMapping("/like/{id}")
     public ResponseEntity<Void> like(@Valid @PathVariable Long id) {
-        likeService.toggleLike(id, userUtil.currentUser());
+        likeService.execute(id);
         return ResponseEntity.ok().build();
     }
 }

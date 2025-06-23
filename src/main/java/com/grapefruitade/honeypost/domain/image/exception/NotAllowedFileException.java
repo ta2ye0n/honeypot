@@ -5,8 +5,8 @@ import com.grapefruitade.honeypost.global.error.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class MaximumImagesExceededException extends CustomException {
-    public MaximumImagesExceededException() {
-        super(ErrorCode.MAXIMUM_IMAGES_EXCEEDED);
+public class NotAllowedFileException extends CustomException {
+    public NotAllowedFileException() {
+        super(ErrorCode.NOT_ALLOWED_FILE);
     }
 }

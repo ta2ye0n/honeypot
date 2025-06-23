@@ -1,6 +1,7 @@
 package com.grapefruitade.honeypost.domain.post.presentation.dto.res;
 
-import com.grapefruitade.honeypost.domain.comment.presentation.dto.res.DetailCommentRes;
+import com.grapefruitade.honeypost.domain.comment.presentation.dto.res.CommentListRes;
+import com.grapefruitade.honeypost.domain.comment.presentation.dto.res.CommentRes;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,5 +15,5 @@ public class PostDetailsRes {
     private String title;
     private String content;
     private Integer likes;
-    private List<DetailCommentRes> comments;
+    private CommentListRes comments;
 }

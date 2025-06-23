@@ -46,7 +46,7 @@ public class Post {
 
     private Integer likes;
 
-    public void modifyPost(String title, String content) {
+    public void editPost(String title, String content) {
         this.title = title;
         this.content = content;
     }
