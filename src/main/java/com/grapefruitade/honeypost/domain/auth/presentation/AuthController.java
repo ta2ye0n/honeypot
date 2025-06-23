@@ -4,6 +4,7 @@ import com.grapefruitade.honeypost.domain.auth.presentation.dto.req.LoginReq;
 import com.grapefruitade.honeypost.domain.auth.presentation.dto.req.RegisterReq;
 import com.grapefruitade.honeypost.domain.auth.presentation.dto.res.TokenRes;
 import com.grapefruitade.honeypost.domain.auth.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,9 +35,9 @@ public class AuthController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> logout(@RequestHeader String refreshToken){
-        authService.logout(refreshToken);
-        return ResponseEntity.ok().body("로그아웃이 완료되었습니다.");
+    public ResponseEntity<String> logout(HttpServletRequest request){
+        authService.logout(request);
+        return ResponseEntity.noContent().build();
     }
 
 }

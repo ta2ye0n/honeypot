@@ -13,6 +13,8 @@ import com.grapefruitade.honeypost.global.security.exception.TokenExpirationExce
 import com.grapefruitade.honeypost.domain.auth.exception.TokenNotFoundException;
 import com.grapefruitade.honeypost.global.security.exception.TokenNotValidException;
 import com.grapefruitade.honeypost.global.security.jwt.TokenProvider;
+import com.grapefruitade.honeypost.global.util.UserUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserUtil userUtil;
 
     public UserInfoRes register(RegisterReq registerRequest){
         if(userRepository.existsByUsername(registerRequest.getUsername())){
@@ -56,7 +59,7 @@ public class AuthService {
     private void saveRefreshToken(TokenRes tokenDto, User user) {
         RefreshToken token = RefreshToken.builder()
                 .token(tokenDto.getRefreshToken())
-                .userid(user.getId())
+                .userId(user.getId())
                 .expiresAt(tokenDto.getRefreshTokenExpiresIn())
                 .build();
 
@@ -70,7 +73,7 @@ public class AuthService {
         RefreshToken validRefreshToken = refreshTokenRepository.findById(parseRefreshToken)
                 .orElseThrow(TokenExpirationException::new);
 
-        User user = userRepository.findById(validRefreshToken.getUserid())
+        User user = userRepository.findById(validRefreshToken.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
 
@@ -83,16 +86,15 @@ public class AuthService {
     }
 
 
-    public void logout(String refreshToken) {
+    public void logout(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").substring(7);
 
-        String parseRefreshToken  = tokenProvider.parseRefreshToken(refreshToken);
-        if (parseRefreshToken == null) {
-            throw new TokenNotValidException();}
+        User user = userUtil.currentUser();
 
-        RefreshToken validRefreshToken = refreshTokenRepository.findById(parseRefreshToken)
-                .orElseThrow(TokenNotFoundException::new);
+        RefreshToken validToken = refreshTokenRepository.findByUserId(user.getId())
+                .orElseThrow(ExpiredRefreshTokenException::new);
 
-        refreshTokenRepository.deleteById(validRefreshToken.getToken());
+        refreshTokenRepository.delete(validToken);
 
     }
 
