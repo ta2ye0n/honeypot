@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @Builder
 @Entity
-@Table(name = "HoneyPot")
+@Table(name = "user")
 public class User {
 
     @Id
