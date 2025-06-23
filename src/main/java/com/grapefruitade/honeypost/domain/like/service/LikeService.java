@@ -25,9 +25,9 @@ public class LikeService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
 
-        boolean liked = likeRepository.existsByUserAndPost(user, post);
-        if (liked) {
-            likeRepository.deleteByUserAndPost(user, post);
+        LikeEntity like = likeRepository.findByUserIdAndPostId(user.getId(), postId);
+        if (like != null) {
+            likeRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
             post.unlike();
         } else {
             likeRepository.save(new LikeEntity(user, post));

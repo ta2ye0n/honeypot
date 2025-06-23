@@ -36,7 +36,7 @@ public class UserService {
                         .author(post.getAuthor().getUsername())
                         .title(post.getTitle())
                         .content(post.getContent())
-                        .likes(likeRepository.countByPost(post))
+                        .likes(likeRepository.countByPostId(post.getId()))
                         .comments(commentRepository.countByPost(post))
                         .previewImage(post.getPreviewUrl())
                         .build())

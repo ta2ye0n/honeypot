@@ -9,12 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
-    boolean existsByUserAndPost(User user, Post post);
+    boolean existsByUserIdAndPostId(Long userId, Long postId);
 
-    void deleteByUserAndPost(User user, Post post);
+    void deleteByUserIdAndPostId(Long userId, Long postId);
 
-    Integer countByPost(Post post);
+    Integer countByPostId(Long postId);
 
-    @Query("SELECT l.post FROM LikeEntity l GROUP BY l.post HAVING COUNT(l.post) >= 50")
+    @Query("SELECT l.postId FROM LikeEntity l GROUP BY l.postId HAVING COUNT(l.postId) >= 50")
     List<Post> findByLikesSizeGreaterThan50();
+
+    LikeEntity findByUserIdAndPostId(Long userId, Long postId);
 }

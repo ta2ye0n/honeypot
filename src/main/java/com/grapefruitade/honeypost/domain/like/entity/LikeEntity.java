@@ -2,6 +2,7 @@ package com.grapefruitade.honeypost.domain.like.entity;
 
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.user.entity.User;
+import com.mysql.cj.log.Log;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -16,18 +17,14 @@ public class LikeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Post post;
+    @Column(name = "post_id")
+    private Long postId;
 
     public LikeEntity(User user, Post post) {
-        this.user = user;
-        this.post = post;
+        this.userId = user.getId();
+        this.postId = post.getId();
     }
 }
