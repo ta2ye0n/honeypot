@@ -20,7 +20,6 @@ public class LikeService {
     private final PostRepository postRepository;
     private final UserUtil userUtil;
 
-    @Transactional
     public void execute(Long postId) {
         User user = userUtil.currentUser();
         Post post = postRepository.findById(postId)

@@ -24,6 +24,7 @@ public class CreatePostService {
                 .ott(createPostReq.getOtt())
                 .book(createPostReq.getBook())
                 .author(user)
+                .likes(0)
                 .build();
 
         postRepository.save(post);
