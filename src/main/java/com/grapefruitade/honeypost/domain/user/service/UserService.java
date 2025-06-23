@@ -42,6 +42,6 @@ public class UserService {
                         .build())
                 .collect(Collectors.toList());
 
-        return new UserPostInfoListRes(infoPosts);
+        return new UserPostInfoListRes(user.getNickname(), infoPosts);
     }
 }

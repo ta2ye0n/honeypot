@@ -15,6 +15,7 @@ public class PostDetailsRes {
     private String title;
     private String content;
     private Integer likes;
+    private Integer commentCount;
     private CommentListRes comments;
     private Boolean likeStatus;
 }

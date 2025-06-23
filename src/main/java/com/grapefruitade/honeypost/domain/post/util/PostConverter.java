@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostConverter {
 
-    public PostRes toListDto(Post post, Boolean likeStatus) {
+    public PostRes toListDto(Post post, Boolean likeStatus, Integer comments) {
         String preview = post.getPreviewUrl() != null ? post.getPreviewUrl() : null;
 
         return PostRes.builder()
@@ -18,18 +18,20 @@ public class PostConverter {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(post.getLikes())
+                .comments(comments)
                 .previewImage(preview)
                 .likeStatus(likeStatus)
                 .build();
     }
 
-    public PostDetailsRes toDto(Post post, CommentListRes commentListRes, Boolean likeStatus) {
+    public PostDetailsRes toDto(Post post, CommentListRes commentListRes, Boolean likeStatus, Integer comments) {
         return PostDetailsRes.builder()
                 .postId(post.getId())
                 .author(post.getAuthor().getNickname())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likes(post.getLikes())
+                .commentCount(comments)
                 .comments(commentListRes)
                 .likeStatus(likeStatus)
                 .build();

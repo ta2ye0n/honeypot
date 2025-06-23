@@ -41,7 +41,11 @@ public class GetPostDetailService {
                 .comments(comments)
                 .build();
 
-        return postConverter.toDto(post, res, likeRepository.existsByUserIdAndPostId(user.getId(), postId));
+        return postConverter
+                .toDto(post, res,
+                    likeRepository.existsByUserIdAndPostId(user.getId(), postId),
+                    commentRepository.countByPost(post)
+                );
     }
 
 }

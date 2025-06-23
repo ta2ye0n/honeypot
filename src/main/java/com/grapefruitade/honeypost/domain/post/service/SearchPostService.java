@@ -1,5 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.service;
 
+import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.entity.Post;
 import com.grapefruitade.honeypost.domain.post.presentation.dto.res.PostListRes;
@@ -20,13 +21,17 @@ public class SearchPostService {
     private final PostConverter postConverter;
     private final LikeRepository likeRepository;
     private final UserUtil userUtil;
+    private final CommentRepository commentRepository;
 
     public PostListRes execute(String keyword) {
         User user = userUtil.currentUser();
         List<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
 
         List<PostRes> res = posts.stream()
-                .map(p-> postConverter.toListDto(p,likeRepository.existsByUserIdAndPostId(user.getId(), p.getId())))
+                .map(p-> postConverter.toListDto(
+                        p,
+                        likeRepository.existsByUserIdAndPostId(user.getId(), p.getId()),
+                        commentRepository.countByPost(p)))
                 .toList();
 
         return PostListRes.builder()

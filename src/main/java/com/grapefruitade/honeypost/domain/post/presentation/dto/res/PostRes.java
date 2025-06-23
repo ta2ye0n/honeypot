@@ -11,6 +11,7 @@ public class PostRes {
     private String title;
     private String content;
     private Integer likes;
+    private Integer comments;
     private String previewImage;
     private Boolean likeStatus;
 }

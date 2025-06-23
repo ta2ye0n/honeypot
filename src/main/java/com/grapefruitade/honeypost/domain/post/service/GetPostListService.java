@@ -1,5 +1,6 @@
 package com.grapefruitade.honeypost.domain.post.service;
 
+import com.grapefruitade.honeypost.domain.comment.repository.CommentRepository;
 import com.grapefruitade.honeypost.domain.like.repository.LikeRepository;
 import com.grapefruitade.honeypost.domain.post.entity.enums.Category;
 import com.grapefruitade.honeypost.domain.post.presentation.dto.res.PostListRes;
@@ -17,6 +18,7 @@ public class GetPostListService {
     private final PostConverter postConverter;
     private final LikeRepository likeRepository;
     private final UserUtil userUtil;
+    private final CommentRepository commentRepository;
 
     public PostListRes execute(Category category) {
         User user = userUtil.currentUser();
@@ -24,7 +26,10 @@ public class GetPostListService {
 
         return PostListRes.builder()
                 .posts(posts.stream()
-                        .map(p-> postConverter.toListDto(p,likeRepository.existsByUserIdAndPostId(user.getId(), p.getId())))
+                        .map(p-> postConverter.toListDto(
+                                p,
+                                likeRepository.existsByUserIdAndPostId(user.getId(), p.getId()),
+                                commentRepository.countByPost(p)))
                         .toList())
                 .build();
     }
